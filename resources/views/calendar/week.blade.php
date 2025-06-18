@@ -43,7 +43,7 @@
     
     <div class="calendar-main-calendar">
         {!! $Calendar->render() !!}
-        <table class="calendar-main-table calendar-main-table-week calendar-main-table-week-data">
+        <table class="calendar-main-table calendar-main-table-weekday calendar-main-table-weekday-data">
             <tbody>
                 <tr>
                     @for ($row = 0; $row < 8; $row++)

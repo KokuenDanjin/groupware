@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Calendar\CalendarMonthView;
+use App\Calendar\CalendarDayView;
 use App\Calendar\CalendarWeekView;
+use App\Calendar\CalendarMonthView;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -18,7 +20,7 @@ class CalendarController extends Controller
                 $Calendar = new CalendarWeekView($carbonDate);
                 break;
             case 'day':
-                $Calendar = new CalendarMonthView($carbonDate);
+                $Calendar = new CalendarDayView($carbonDate);
                 break;
             case 'month':
             default:

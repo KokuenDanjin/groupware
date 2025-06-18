@@ -178,32 +178,32 @@ td:has(.day) {
     gap: .5rem;
 }
 
-/* カレンダー本体 週表示 */
-.calendar-main-table-week th:first-child,
-.calendar-main-table-week td:first-child  {
+/* カレンダー本体 週・日表示 共通 */
+.calendar-main-table-weekday th:first-child,
+.calendar-main-table-weekday td:first-child  {
     width: 2rem;
 }
 
-.calendar-main-table-week {
+.calendar-main-table-weekday {
     border-collapse: collapse;
 }
 
-.calendar-main-table-week-data td {
+.calendar-main-table-weekday-data td {
     border-top: none;
 }
 
-.calendar-week-header-cell {
+.calendar-weekday-header-cell {
     display: flex;
     justify-content: center;
 }
 
-.calendar-week-header-cell > .spacer,
-.calendar-week-header-cell > .day,
-.calendar-week-header-cell > a {
+.calendar-weekday-header-cell > .spacer,
+.calendar-weekday-header-cell > .day,
+.calendar-weekday-header-cell > a {
     flex: 1;
 }
 
-.calendar-week-header-cell > a {
+.calendar-weekday-header-cell > a {
     text-align: left;
 }
 
@@ -216,5 +216,10 @@ td:has(.day) {
 }
 
 .time-cell {
+    text-align: center;
+}
+
+/* カレンダー本体 日表示 共通 */
+.calendar-weekday-header-cell > a {
     text-align: center;
 }

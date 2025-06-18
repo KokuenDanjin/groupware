@@ -1,6 +1,6 @@
 <?php 
 /**
-* 月間カレンダーをViewに渡すクラス
+* 月表示カレンダーをViewに渡すクラス
 *
 * @author Carlos
 * @since 1.0.0

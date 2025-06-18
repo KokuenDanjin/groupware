@@ -1,6 +1,6 @@
 <?php 
 /**
-* 週間カレンダーをViewに渡すクラス
+* 週表示カレンダーをViewに渡すクラス
 *
 * @author Carlos
 * @since 1.0.0
@@ -39,8 +39,8 @@ class CalendarWeekView extends CalendarView {
         $html = [];
         // ヘッダ
         $html[] = trim('
-            <div class="calendar-main-week-calendar">
-                <table class="calendar-main-table calendar-main-table-week">
+            <div class="calendar-main-weekday-calendar">
+                <table class="calendar-main-table calendar-main-table-weekday">
                     <thead>
                         <tr>
                             <th></th>
@@ -56,7 +56,7 @@ class CalendarWeekView extends CalendarView {
             $html[] = '<th class="' . implode(" ", $td_classes) . '">';
 
             $html[] = trim('
-                <div class="calendar-week-header-cell">
+                <div class="calendar-weekday-header-cell">
                 <div class="spacer"></div>
                 ');
             $html[] = $day->render("j({$day->getDayOfWeek()})"); // 'フォーマットを日付(曜日)に指定'
