@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,5 +17,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// カレンダー
+Route::get('calendar/{type?}/{currentDate?}', [CalendarController::class, 'show'])
+    ->middleware('auth')
+    ->name('Calendar.view')
+    ->where([
+        'type' => 'month|week|day',
+        'currentDate' => '\d{8}' //YYYYMMDD
+    ]);
 
 require __DIR__.'/auth.php';
