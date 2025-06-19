@@ -92,13 +92,26 @@ class CalendarMonthView extends CalendarView {
                 $td_classes = [$day->getClassName()];
                 if ($day->isToday()) $td_classes[] = "day-today"; // 「今日」のみクラスを追加
                 $html[] = '<td class="' . implode(" ", $td_classes) . '">';
-                $html[] = '<div class="day-cell">';
+                $html[] = trim('
+                    <div class="day-cell">
+                        <div class="calendar-dateblock">
+                    ');
                 $html[] = $day->render();
 
                 $html[] = trim('
+                        <div class="schedule-add-button-block">
                             <a href="#">
                                 <span class="schedule-add-button material-symbols-outlined">edit_square</span>
                             </a>
+                        </div>
+                    </div>
+                    <div class="calendar-schedule-area">
+                    ');
+                
+                // ----スケジュールのレンダリングエリア----
+                
+                $html[] = trim('
+                            </div>
                         </div>
                     </td>
                     ');

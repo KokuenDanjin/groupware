@@ -56,15 +56,17 @@ class CalendarWeekView extends CalendarView {
             $html[] = '<th class="' . implode(" ", $td_classes) . '">';
 
             $html[] = trim('
-                <div class="calendar-weekday-header-cell">
+                <div class="calendar-weekday-header-cell calendar-week-header-cell">
                 <div class="spacer"></div>
                 ');
             $html[] = $day->render("j({$day->getDayOfWeek()})"); // 'フォーマットを日付(曜日)に指定'
 
             $html[] = trim('
-                                <a href="#">
-                                    <span class="schedule-add-button material-symbols-outlined">edit_square</span>
-                                </a>
+                                <div class="schedule-add-button-block">
+                                    <a href="#">
+                                        <span class="schedule-add-button material-symbols-outlined">edit_square</span>
+                                    </a>
+                                </div>
                             </div>
                         </th>');
             }

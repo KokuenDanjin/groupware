@@ -1,0 +1,266 @@
+// 共通
+$bg-color: white;
+$bg-color-hover : lightblue;
+$bg-color-active : #818181;
+$text-color-main : black;
+$text-color-active : azure;
+$table-border-color: #c9c9c9;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: $text-color-main;
+}
+
+.calendar-main {
+    width : 100%;
+    margin-top: 2rem;
+    background-color: $bg-color;
+}
+
+.calendar-container {
+    padding: 0 16px;
+}
+
+/* changeView */
+.calendar-changeView {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    display: flex;
+    justify-content: end;
+
+    &-title {
+        margin: 0 5px 0 3px;
+        font-weight: 800;
+    }
+
+    &-items {
+        display: flex;
+        border-collapse: collapse;
+
+        .calendar-changeView-item {
+            border: solid 1px $table-border-color;
+            border-right: 0;
+
+            &:last-child {
+                border-right: solid 1px $table-border-color;
+            }
+
+            a,
+            span {
+            padding: 6px 24px;
+            display: inline-block;
+            text-align: center;
+            line-height: 1;
+            transition: background-color .3s ease;
+            }
+
+            a:hover {
+            background-color: $bg-color-hover;
+            }
+
+            span.calendar-changeView-active {
+            background-color: $bg-color-active;
+            color: $text-color-active;
+            user-select: none;
+            }
+        }
+    }
+}
+
+/* カレンダー共通 */
+$a-text-color : #0a62ad;
+$text-color-sunday : red;
+$text-color-saturday : blue;
+$bg-color-sunday : #FFF1F2;
+$bg-color-saturday : #E9F6FE;
+$bg-color-today : #FCFAD5;
+
+
+.calendar-mainarea {
+    padding-top: 10px;
+
+    a {
+        color: $a-text-color;
+    }
+}
+
+.calendar-contents {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-navarea {
+    width: 100%;
+    table-layout: fixed;
+    
+    td:has(.calendar-userselect-form) {
+        text-align: left;
+    }
+
+    td:has(.calendar-date-block) {
+        text-align: center;
+    }
+
+    .calendar-userselect-form {
+        select {
+            padding: 0 30px 0 4px;
+            box-sizing: border-box;
+        }
+    }
+
+    .calendar-date-block {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+
+        .calendar-move-button {
+            span {
+                color: #818181;
+                vertical-align: bottom;
+                transition: background-color .3s ease;
+
+                &:hover {
+                    background-color: $bg-color-hover;
+                }
+            }
+        }
+
+        .calendar-date {
+            margin: 0 .5rem;
+
+            a {
+                color: $text-color-main;
+                font-weight: 800;
+            }
+        }
+    }
+}
+
+.calendar-main-calendar {
+    width: 100%;
+    margin-top: .5rem;
+}
+
+/* カレンダー本体 共通 */
+.calendar-main-table {
+    width: 100%;
+    table-layout: fixed;
+    
+    th,
+    td {
+        border: solid 1px $table-border-color;
+    }
+
+    th {
+        font-weight: 400;
+        text-align: center;
+    }
+}
+
+.header {
+    &-sun {
+    background-color: $bg-color-sunday;
+    color: $text-color-sunday;
+    }
+
+    &-sat {
+    background-color: $bg-color-saturday;
+    color: $text-color-saturday;
+    }
+}
+
+.schedule-add-button-block {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+
+    .schedule-add-button {
+        padding: 3px;
+        color: #818181;
+        font-size: 1rem;
+        vertical-align: top;
+
+        &:hover {
+            border: solid 1px #CCC;
+            border-radius: 5px;
+        }
+    }
+}
+
+
+/* カレンダー本体 月表示 */
+.calendar-main-month-calendar {
+    .day-today {
+        background-color: $bg-color-today;
+    }
+
+    td:has(.day) {
+        padding: 4px;
+        vertical-align: top;
+    }
+
+    .day-cell {
+        .calendar-dateblock {
+            height: 1.3rem;
+            margin-left: .2rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .calendar-schedule-area {
+            min-height: 6rem;
+        }
+    }
+}
+
+/* カレンダー本体 週・日表示 共通 */
+.calendar-main-table-weekday {
+    border-collapse: collapse;
+
+    th:first-child,
+    td:first-child  {
+        width: 2rem;
+    }
+
+    &-data td {
+        border-top: none;
+    }
+}
+
+.calendar-weekday-header-cell {
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+
+    > div {
+        flex: 1;
+    }
+}
+
+.calendar-cell {
+    height: 60px;
+    
+    &:not(:first-child) {
+    border-top: dashed 1px $table-border-color;
+    }
+}
+
+.time-cell {
+    text-align: center;
+}
+
+/* カレンダー本体 週表示 */
+.calendar-week-header-cell {
+    .schedule-add-button-block {
+        justify-content: flex-start;
+    }
+}
+

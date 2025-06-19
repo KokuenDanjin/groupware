@@ -14,11 +14,9 @@
         <!-- Google Fonts（Material Symbols）-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/calendar/calendarStyle.css') }}">
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('styles')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
