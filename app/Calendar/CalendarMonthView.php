@@ -57,6 +57,27 @@ class CalendarMonthView extends CalendarView {
     }
 
     /**
+    * スケジュールをレンダリングするメソッド
+    *
+    * @return string スケジュールのhtml
+    */
+    function scheduleRender(): string
+    {
+        $html = [];
+
+        $html[] = trim('
+            <div class="schedule-panel">
+                <p class="schedule-text">買い物：カネスエ</p>
+            </div>
+            <div class="schedule-panel">
+                <p class="schedule-text">映画：鬼滅の刃</p>
+            </div>
+        ');
+
+        return implode('', $html);
+    }
+
+    /**
     * カレンダーをレンダリングするメソッド
     *
     * @return string カレンダーのhtml
@@ -80,7 +101,7 @@ class CalendarMonthView extends CalendarView {
                         </tr>
                     </thead>
                     <tbody>
-            ');
+        ');
 
         // データ
         $weeks = $this->getWeeks();
@@ -95,7 +116,7 @@ class CalendarMonthView extends CalendarView {
                 $html[] = trim('
                     <div class="day-cell">
                         <div class="calendar-dateblock">
-                    ');
+                ');
                 $html[] = $day->render();
 
                 $html[] = trim('
@@ -106,23 +127,25 @@ class CalendarMonthView extends CalendarView {
                         </div>
                     </div>
                     <div class="calendar-schedule-area">
-                    ');
+                ');
                 
                 // ----スケジュールのレンダリングエリア----
+                $html[] = $this->scheduleRender();
                 
+
                 $html[] = trim('
                             </div>
                         </div>
                     </td>
-                    ');
-                }
+                ');
+            }
             $html[] = trim('</tr>');
         }
         $html[] = trim('
                     </tbody>
                 </table>
             </div>
-            ');
+        ');
 
         return implode('', $html);
     }

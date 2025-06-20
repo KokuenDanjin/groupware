@@ -11,7 +11,7 @@ namespace App\Calendar;
 use Carbon\Carbon;
 
 
-class CalendarView {
+abstract class CalendarView {
     protected $carbon;
     public static $weekMaps = [
         'ddd' => ['日', '月', '火', '水', '木', '金', '土'],
@@ -110,5 +110,12 @@ class CalendarView {
 
         return $weekMap[$i];
     }
+
+    /**
+    * スケジュールをレンダリングするメソッド
+    *
+    * @return string スケジュールのhtml
+    */
+    abstract function scheduleRender(): string;
 
 }

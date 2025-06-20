@@ -23,6 +23,7 @@ body {
 
 .calendar-container {
     padding: 0 16px;
+    min-width: 1020px;
 }
 
 /* changeView */
@@ -209,7 +210,7 @@ $bg-color-today : #FCFAD5;
     .day-cell {
         .calendar-dateblock {
             height: 1.3rem;
-            margin-left: .2rem;
+            margin: 0 0 .5rem .2rem;
             display: flex;
             align-items: center;
             gap: .5rem;
@@ -217,6 +218,9 @@ $bg-color-today : #FCFAD5;
 
         .calendar-schedule-area {
             min-height: 6rem;
+            display: flex;
+            flex-direction: column;
+            gap: .2rem;
         }
     }
 }
@@ -232,6 +236,11 @@ $bg-color-today : #FCFAD5;
 
     &-data td {
         border-top: none;
+        position: relative;
+    }
+
+    .schedule-cell {
+        position: relative;
     }
 }
 
@@ -246,7 +255,7 @@ $bg-color-today : #FCFAD5;
 }
 
 .calendar-cell {
-    height: 60px;
+    height: 60px; // 変更禁止（スケジュールのレンダリングに影響）
     
     &:not(:first-child) {
     border-top: dashed 1px $table-border-color;
@@ -264,3 +273,21 @@ $bg-color-today : #FCFAD5;
     }
 }
 
+// スケジュールパネル
+.schedule-panel {
+    padding: 0 .3rem;
+    background-color: #3584D2;
+    border-radius: 2px;
+    line-height: 1.1rem;
+    font-size: .8rem;
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    cursor: pointer;
+}
+
+.weekday-schedule-panel {
+    position: absolute;
+    opacity: .8;
+}

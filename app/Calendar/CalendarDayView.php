@@ -8,7 +8,7 @@
 
 namespace App\Calendar;
 
-class CalendarDayView extends CalendarView {
+class CalendarDayView extends CalendarTimebaseView {
 
     function __construct($date) 
     {
@@ -30,7 +30,7 @@ class CalendarDayView extends CalendarView {
                     <thead>
                         <tr>
                             <th></th>
-            ');
+        ');
 
         $day = new CalendarWeekDay($this->carbon);
 
@@ -52,7 +52,7 @@ class CalendarDayView extends CalendarView {
                     </tr>
                 </thead>
             </table>
-            ');
+        ');
 
         return implode('', $html);
     }

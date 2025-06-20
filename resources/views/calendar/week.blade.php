@@ -48,7 +48,11 @@
                 <tr>
                     @for ($row = 0; $row < 8; $row++)
                         <td>
-                            <div class="calendar-daily calendar-cell {{ ($row === 0 ? 'time-cell' : 'schedule-cell') }}"></div>
+                            <div class="calendar-daily calendar-cell {{ ($row === 0 ? 'time-cell' : 'schedule-cell') }}">
+                                @if ($row !== 0)
+                                    {!! $Calendar->scheduleRender() !!}
+                                @endif
+                            </div>
                             @for ($col = 8; $col < 21; $col++)
                                 @php
                                     $clasess = ['calendar-hour', 'calendar-cell'];

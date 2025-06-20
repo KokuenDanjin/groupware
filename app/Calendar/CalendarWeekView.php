@@ -8,26 +8,12 @@
 
 namespace App\Calendar;
 
-class CalendarWeekView extends CalendarView {
+class CalendarWeekView extends CalendarTimebaseView {
 
     function __construct($date) 
     {
         parent::__construct($date);
     }
-
-    /**
-    * カレンダーの時間軸の表示範囲を設定するメソッド
-    * 
-    *
-    * @param int $startTime 開始時間
-    * @param int $endTime 終了時間
-    *
-    * @return array ['開始時間', '終了時間'] 
-    */
-    // function setAvailabilityTime(int $startTime = 8, int $endTime = 20): array
-    // {
-    //     return ['startTime' => $startTime, 'endTime' => $endTime];
-    // }
 
     /**
     * カレンダーをレンダリングするメソッド
@@ -44,7 +30,7 @@ class CalendarWeekView extends CalendarView {
                     <thead>
                         <tr>
                             <th></th>
-            ');
+        ');
         $week = new CalendarWeek($this->carbon);
         $days = $week->getDays($this->carbon);
 
@@ -58,23 +44,24 @@ class CalendarWeekView extends CalendarView {
             $html[] = trim('
                 <div class="calendar-weekday-header-cell calendar-week-header-cell">
                 <div class="spacer"></div>
-                ');
+            ');
             $html[] = $day->render("j({$day->getDayOfWeek()})"); // 'フォーマットを日付(曜日)に指定'
 
             $html[] = trim('
-                                <div class="schedule-add-button-block">
-                                    <a href="#">
-                                        <span class="schedule-add-button material-symbols-outlined">edit_square</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>');
+                        <div class="schedule-add-button-block">
+                            <a href="#">
+                                <span class="schedule-add-button material-symbols-outlined">edit_square</span>
+                            </a>
+                        </div>
+                    </div>
+                </th>
+            ');
             }
         $html[] = trim('
                     </tr>
                 </thead>
             </table>
-            ');
+        ');
 
         return implode('', $html);
     }
