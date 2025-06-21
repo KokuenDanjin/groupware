@@ -107,7 +107,7 @@ abstract class CalendarTimebaseView extends CalendarView {
         // 最終HTML
         $html = [];
         $html[] = trim('
-            <div class="schedule-panel weekday-schedule-panel" style="' . $styleAttribute .'">
+            <div class="schedule-panel weekday-schedule-panel" style="' . $styleAttribute .'" data-schedule-id=' . e($schedule['id']) . '>
                 <p class="schedule-text">' . $scheduleText . '</p>
             </div>
         ');

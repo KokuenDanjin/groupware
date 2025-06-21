@@ -276,18 +276,19 @@ $bg-color-today : #FCFAD5;
 // スケジュールパネル
 .schedule-panel {
     padding: 0 .3rem;
+    z-index: 10;
     background-color: #3584D2;
     border-radius: 2px;
     line-height: 1.1rem;
-    font-size: .8rem;
-    color: white;
     display: flex;
     align-items: flex-start;
     gap: .5rem;
+    opacity: .6;
+    font-size: .8rem;
+    color: white;
     cursor: pointer;
 }
 
 .weekday-schedule-panel {
     position: absolute;
-    opacity: .8;
 }

@@ -63,14 +63,26 @@ class CalendarMonthView extends CalendarView {
     */
     function scheduleRender(): string
     {
+        // 仮データ
+        $schedule = [
+            'id' => 1,
+            'title' => 'カネスエ',
+            'categoryId' => null,
+            'startTime' => '202506201230',
+            'endTime' => '202506201410',
+        ];
+
+        $scheduleContents = [];
+        if ($schedule['categoryId']) $scheduleContents[] = $schedule['categoryId'] . '：'; // カテゴリ
+        $scheduleContents[] = $schedule['title']; // タイトル
+
+        $scheduleText = implode(' ', $scheduleContents);
+
         $html = [];
 
         $html[] = trim('
-            <div class="schedule-panel">
-                <p class="schedule-text">買い物：カネスエ</p>
-            </div>
-            <div class="schedule-panel">
-                <p class="schedule-text">映画：鬼滅の刃</p>
+            <div class="schedule-panel" data-schedule-id=' . e($schedule['id']) . '>
+                <p class="schedule-text">' . $scheduleText . '</p>
             </div>
         ');
 
