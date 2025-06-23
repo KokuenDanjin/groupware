@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedule_users', function (Blueprint $table) {
+        Schema::create('schedule_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 20)->unique();
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedule_users');
+        Schema::dropIfExists('schedule_categories');
     }
 };

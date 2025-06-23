@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->foreignId('category_id')->nullable()->constrained('schedule_categories')->cascadeOnDelete();
+            $table->enum('time_type', ['normal', 'all_day', 'undecided'])->default('normal');
+            $table->dateTime('start_time')->nullable();
+            $table->dateTime('end_time')->nullable();
+            $table->boolean('private_flg')->default(false)->comment('true:非公開, false:公開');
             $table->timestamps();
         });
     }
