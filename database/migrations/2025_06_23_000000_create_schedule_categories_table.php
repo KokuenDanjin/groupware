@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('schedule_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name', 20)->unique();
+            $table->string('bg_color', 7);
+            $table->string('font_color', 7);
             $table->timestamps();
         });
     }
