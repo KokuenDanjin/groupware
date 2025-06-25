@@ -1,0 +1,1 @@
+import '../components/schedule/schedule.scss';

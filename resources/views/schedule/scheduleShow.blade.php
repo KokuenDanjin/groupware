@@ -1,4 +1,4 @@
-@vite(['resources/js/schedule.js'])
+@vite(['resources/js/pages/schedule.js'])
 <x-app-layout>
     <div class="schedule-main">
         <div class="schedule-container">
