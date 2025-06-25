@@ -1,0 +1,116 @@
+// 共通
+$bg-color: white;
+$bg-color-hover : lightblue;
+$bg-color-active : #818181;
+$text-color-main : black;
+$text-color-active : azure;
+$text-color-no-data : #999;
+$table-border-color: #c9c9c9;
+$btn-color-edit: #30A7E7;
+$btn-color-delete: #D2504D;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: $text-color-main;
+}
+
+.schedule-main {
+    width : 100%;
+    margin-top: 2rem;
+    padding: 1rem 0 10rem;
+    background-color: $bg-color;
+    display: flex;
+    justify-content: center;
+}
+
+.schedule-container {
+    padding: 0 16px;
+    width: 1020px;
+    min-width: 510px;
+}
+
+.schedule {
+    &__title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: .5rem;
+    }
+
+    &__detail {
+        margin-top: .5rem;
+        &__table {
+            $border-prop : solid 1px $table-border-color;
+
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 1.2rem;
+
+            tr {
+                height: 2em;
+
+                &:last-child {
+                    th, td {
+                        border-bottom: $border-prop;
+                    }
+                }
+            }
+            
+            th, td {
+                border-top: $border-prop;
+            }
+            
+            th {
+                width: 5em;
+                border-right: $border-prop;
+                font-weight: 400;
+            }
+
+            td {
+                padding: 0 .5em;
+            }
+        }
+
+        &__no-data {
+            color: $text-color-no-data;
+        }
+    }
+
+    &__nav {
+        margin-top: .5rem;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+
+        &__button {
+            padding: .2rem .5rem;
+            color: white;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            
+            &:hover,
+            &:focus {
+                opacity: .8;
+            }
+
+            &-edit {
+                background-color: $btn-color-edit;
+            }
+
+            &-delete {
+                background-color: $btn-color-delete;
+            }
+        }
+
+        &__icon {
+            font-size: 1.2rem;
+        }
+    }
+}

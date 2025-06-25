@@ -8,10 +8,11 @@ use App\Calendar\CalendarMonthView;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CalendarController extends Controller
 {
-    function show(Request $request, $type = 'month', $currentDate = null)
+    function show(Request $request, $type = 'month', $currentDate = null):View
     {
         $carbonDate = $currentDate ? Carbon::createFromFormat('Ymd', $currentDate) : now();
                 

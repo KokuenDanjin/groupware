@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,5 +27,10 @@ Route::get('calendar/{type?}/{currentDate?}', [CalendarController::class, 'show'
         'type' => 'month|week|day',
         'currentDate' => '\d{8}' //YYYYMMDD
     ]);
+
+// スケジュール
+Route::middleware('auth')->prefix('schedule/{id}')->name('schedule')->group(function() {
+    Route::get('', [ScheduleController::class, 'show'])->name('');
+});
 
 require __DIR__.'/auth.php';
