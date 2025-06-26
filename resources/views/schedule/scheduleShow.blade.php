@@ -2,7 +2,7 @@
 <x-app-layout>
     <div class="schedule-main">
         <div class="schedule-container">
-            <a class="back-to-calendar-button" href="{{ route('Calendar.view', session('calendar.back')) }}">カレンダーに戻る</a>
+            @include('schedule.components.back-to-calendar-button')
             <div class="schedule__title">買い物：カネスエ</div>
             <div class="schedule__detail">
                 <table class="schedule__detail__table">
@@ -26,16 +26,16 @@
             </div>
             <ul class="schedule__nav">
                 <li>
-                    <button class="schedule__nav__button schedule__nav__button-edit" type="button">
+                    <a class="schedule__nav__button schedule__nav__button-edit" href="{{ route('schedule.edit', ['id' => $id]) }}">
                         <span class="material-symbols-outlined schedule__nav__icon">edit_document</span>
                         <span>変更</span>
-                    </button>
+                    </a>
                 </li>
                 <li>
-                    <button class="schedule__nav__button schedule__nav__button-delete" type="button">
+                    <a class="schedule__nav__button schedule__nav__button-delete">
                         <span class="material-symbols-outlined schedule__nav__icon">delete</span> 
                         <span>削除</span>
-                    </button>
+                    </a>
                 </li>
             </ul>
         </div>

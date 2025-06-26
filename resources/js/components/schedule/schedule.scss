@@ -13,6 +13,7 @@ $table-border-color: #c9c9c9;
 $btn-color-back: #4D4D4D;
 $btn-color-edit: #30A7E7;
 $btn-color-delete: #D2504D;
+$btn-color-save: #88C03C;
 
 * {
     margin: 0;
@@ -136,6 +137,10 @@ body {
 
             &-delete {
                 background-color: $btn-color-delete;
+            }
+
+            &-save {
+                background-color: $btn-color-save;
             }
         }
 

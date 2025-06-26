@@ -112,6 +112,27 @@ abstract class CalendarView {
     }
 
     /**
+    * スケジュール新規作成ボタンのdivタグを取得するメソッド
+    *
+    * @param CalendarWeekDay CalendarWeekDayインスタンス
+    *
+    * @return string HTML schedule-add-button-blockクラス
+    */
+    function getScheduleAddButton($day):string
+    {
+        $scheduleAddBtnRoute = route('schedule.edit.create');
+        $html[] = trim('
+            <div class="schedule-add-button-block">
+                <a class="schedule-add-button" href="' . $scheduleAddBtnRoute .'">
+                    <span class="schedule-add-button-icon material-symbols-outlined">edit_square</span>
+                </a>
+            </div>
+        ');
+
+        return implode('', $html);
+    }
+
+    /**
     * スケジュールをレンダリングするメソッド
     *
     * @return string スケジュールのhtml

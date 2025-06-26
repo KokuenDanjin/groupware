@@ -40,13 +40,10 @@ class CalendarDayView extends CalendarTimebaseView {
         if ($day->isSaturday()) $td_classes[] = "header-sat";
         $html[] = '<th class="' . implode(" ", $td_classes) . '">';
 
+        $html[] = trim('<div class="calendar-weekday-header-cell calendar-day-header-cell">');
+
+        $html[] = $this->getScheduleAddButton($day);
         $html[] = trim('
-                                <div class="calendar-weekday-header-cell calendar-day-header-cell">
-                                <div class="schedule-add-button-block">
-                                    <a href="#">
-                                        <span class="schedule-add-button material-symbols-outlined">edit_square</span>
-                                    </a>
-                                </div>
                             </div>
                         </th>
                     </tr>

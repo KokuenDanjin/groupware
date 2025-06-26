@@ -33,7 +33,7 @@ class CalendarController extends Controller
         session([
             'calendar.back' => [
                 'type' => $type,
-                'currentdate' => $currentDate
+                'currentDate' => $currentDate
             ]
         ]);
 

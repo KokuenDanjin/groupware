@@ -29,8 +29,16 @@ Route::get('calendar/{type?}/{currentDate?}', [CalendarController::class, 'show'
     ]);
 
 // スケジュール
-Route::middleware('auth')->prefix('/schedule/{id}')->name('schedule')->group(function() {
-    Route::get('', [ScheduleController::class, 'show'])->name('');
+//ID無し用
+Route::middleware('auth')->prefix('/schedule')->name('schedule.')->group(function() {
+    Route::get('edit', [ScheduleController::class, 'edit'])->name('edit.create');
+    Route::post('store', [ScheduleController::class, 'store'])->name('store');
+});
+// ID必須用
+Route::middleware('auth')->prefix('/schedule/{id}')->name('schedule.')->group(function() {
+    Route::get('', [ScheduleController::class, 'show'])->name('show');
+    Route::get('edit', [ScheduleController::class, 'edit'])->name('edit');
+    Route::post('update', [ScheduleController::class, 'update'])->name('update');
 });
 
 require __DIR__.'/auth.php';

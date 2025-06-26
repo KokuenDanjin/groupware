@@ -131,12 +131,8 @@ class CalendarMonthView extends CalendarView {
                 ');
                 $html[] = $day->render();
 
-                $html[] = trim('
-                        <div class="schedule-add-button-block">
-                            <a href="#">
-                                <span class="schedule-add-button material-symbols-outlined">edit_square</span>
-                            </a>
-                        </div>
+                $html[] = $this->getScheduleAddButton($day);
+                $html[] = trim('            
                     </div>
                     <div class="calendar-schedule-area">
                 ');

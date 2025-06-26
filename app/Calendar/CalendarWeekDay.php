@@ -19,6 +19,18 @@ class CalendarWeekDay {
     }
 
     /**
+    * タイムスタンプを文字列で返すメソッド
+    *
+    * @param string $format 日付の表示フォーマット（Carbonのformatメソッドに準拠）
+    *
+    * @return string タイムスタンプの文字列
+    */
+    function getString(string $format = null): string
+    {
+        return $this->carbon->format($format ?? 'j');
+    }
+
+    /**
     * クラス名を生成するメソッド
     *
     * @return string クラス名（例：day-sun）
@@ -72,13 +84,12 @@ class CalendarWeekDay {
     /**
     * 1日をレンダリングするメソッド
     *
-    * @param string $format 日付の表示フォーマット（Carbonのformarメソッドに準拠）
+    * @param string $format 日付の表示フォーマット（Carbonのformatメソッドに準拠）
     *
     * @return string htmlのpタグ
     */
     function render(string $format = null): string
     {
-        $data = $this->carbon->format($format ?? 'j');
-        return '<p class="day">' . $data . '</p>';
+        return '<p class="day">' . $this->getString($format) . '</p>';
     }
 }

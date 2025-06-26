@@ -1,0 +1,1 @@
+<a class="back-to-calendar-button" href="{{ route('Calendar.view', session('calendar.back')) }}">カレンダーに戻る</a>

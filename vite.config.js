@@ -9,7 +9,8 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/pages/calendar/calendar.js',
                 'resources/js/pages/schedule/schedule.js',
-                'resources/js/components/calendar/index.js'
+                'resources/js/components/calendar/index.js',
+                'resources/js/components/schedule/index.js'
             ],
             refresh: true,
         }),
