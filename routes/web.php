@@ -17,4 +17,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 掲示板関連
+Route::middleware(['auth'])->group(function () {
+    Route::resource('topics', TopicController::class);
+});
+
 require __DIR__.'/auth.php';
