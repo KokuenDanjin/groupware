@@ -29,7 +29,7 @@ Route::get('calendar/{type?}/{currentDate?}', [CalendarController::class, 'show'
     ]);
 
 // スケジュール
-Route::middleware('auth')->prefix('schedule/{id}')->name('schedule')->group(function() {
+Route::middleware('auth')->prefix('/schedule/{id}')->name('schedule')->group(function() {
     Route::get('', [ScheduleController::class, 'show'])->name('');
 });
 

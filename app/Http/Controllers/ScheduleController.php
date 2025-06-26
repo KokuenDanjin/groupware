@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ScheduleController extends Controller
 {
-    function show():View
+    function show($id):View
     {
-        $id = 1;
+        
         return view('schedule.scheduleShow', ['id' => $id]);
+    }
+
+    function store():RedirectResponse
+    {
+        return redirect('');
     }
 }

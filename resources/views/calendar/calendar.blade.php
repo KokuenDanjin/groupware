@@ -1,4 +1,4 @@
-@vite(['resources/js/pages/calendar.js'])
+@vite(['resources/js/pages/calendar.js', 'resources/js/components/calendar/index.js'])
 <x-app-layout>
     <div class="calendar-main">
         <div class="calendar-changeView calendar-container">

@@ -1,3 +1,6 @@
+// GoogleFonts
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
 // 共通
 $bg-color: white;
 $bg-color-hover : lightblue;
@@ -5,7 +8,9 @@ $bg-color-active : #818181;
 $text-color-main : black;
 $text-color-active : azure;
 $text-color-no-data : #999;
+$a-text-color : #0a62ad;
 $table-border-color: #c9c9c9;
+$btn-color-back: #4D4D4D;
 $btn-color-edit: #30A7E7;
 $btn-color-delete: #D2504D;
 
@@ -31,6 +36,31 @@ body {
     padding: 0 16px;
     width: 1020px;
     min-width: 510px;
+}
+
+.back-to-calendar-button {
+    margin-bottom: .5rem;
+    padding: .2rem 1.6rem .2rem .8rem;
+    border-radius: 4rem;
+    background-color: $btn-color-back;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    
+    &:before {
+        font-family: "Material Icons";
+        content: '\e5e0';
+        margin-right: .2rem;
+        font-size: .8em;
+        line-height: 1;
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    &:hover,
+    &:focus {
+        opacity: .8;
+    }
 }
 
 .schedule {

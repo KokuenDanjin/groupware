@@ -27,13 +27,17 @@ class CalendarController extends Controller
             default:
                 $Calendar = new CalendarMonthView($carbonDate);
                 break;
-        }      
+        }
 
-        return view('Calendar.calendar', [
-            'Calendar' => $Calendar,
-            'type' => $type,
-            'currentDate' => $currentDate
+        // セッションに記録
+        session([
+            'calendar.back' => [
+                'type' => $type,
+                'currentdate' => $currentDate
+            ]
         ]);
+
+        return view('Calendar.calendar', compact('Calendar', 'type', 'currentDate'));
     }
 
 }

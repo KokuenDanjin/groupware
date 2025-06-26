@@ -2,6 +2,7 @@
 <x-app-layout>
     <div class="schedule-main">
         <div class="schedule-container">
+            <a class="back-to-calendar-button" href="{{ route('Calendar.view', session('calendar.back')) }}">カレンダーに戻る</a>
             <div class="schedule__title">買い物：カネスエ</div>
             <div class="schedule__detail">
                 <table class="schedule__detail__table">
