@@ -149,3 +149,63 @@ body {
         }
     }
 }
+
+// editフォーム
+.schedule-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    // 共通
+    &__main-label {
+        font-size: 1.5rem;
+    }
+
+    &__label-for-radio {
+        display: inline-flex;
+        align-items: center;
+        gap: .25rem;
+        line-height: 1.5;
+        cursor: pointer;
+
+        &:not(:last-of-type) {
+            margin-right: .6rem;
+        }
+    }
+
+    // タイトル
+    &__title-input {
+        width: 100%;
+        display: flex;
+        gap: .5rem;
+    }
+
+    &__category-select {
+        width: 10rem;
+    }
+
+    &__title-input-text {
+        flex: 1;
+    }
+
+    // 日時
+    &__datetime-datetime {
+        margin-top: .3rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    // 参加者
+    &__participants-select {
+        width: 15rem;
+    }
+
+    // メモ
+    &__memo-textarea {
+        resize: none;
+        width: 100%;
+        height: 200px;
+    }
+}

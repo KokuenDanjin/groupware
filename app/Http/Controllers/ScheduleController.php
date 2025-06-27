@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\schedule;
+use App\Models\schedule_category;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,10 +19,22 @@ class ScheduleController extends Controller
 
     function edit($id = null):view
     {
+        $categories = schedule_category::all();
+        $users = User::all();
+
+        $contents = compact('categories', 'users');
+
         if ($id) {
-            return view('schedule.scheduleEdit', ['id' => $id, 'mode' => 'edit']);
+            $schedules = schedule::find($id);
+            if(!$schedules) {
+                abort(404, 'スケジュールが見つかりません');
+            }
+            $contents['schedules'] = $schedules;
+            $contents['mode'] = 'edit'; 
+            return view('schedule.scheduleEdit', $contents);
         } else {
-            return view('schedule.scheduleEdit', ['id' => $id, 'mode' => 'create']);
+            $contents['mode'] = 'create';
+            return view('schedule.scheduleEdit', $contents);
         };
     }
 
