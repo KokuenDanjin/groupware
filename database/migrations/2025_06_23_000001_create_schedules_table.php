@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
             $table->boolean('private_flg')->default(false)->comment('true:非公開, false:公開');
+            $table->text('memo')->nullable();
             $table->timestamps();
         });
     }
