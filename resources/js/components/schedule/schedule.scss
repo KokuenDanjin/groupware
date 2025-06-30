@@ -195,6 +195,10 @@ body {
         display: flex;
         align-items: center;
         gap: 1rem;
+
+        &-start, &-end {
+            display: flex;
+        }
     }
 
     // 参加者

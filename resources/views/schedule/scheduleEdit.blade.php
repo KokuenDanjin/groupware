@@ -16,7 +16,7 @@
                                 <option disabled>カテゴリがありません</option>
                                 @endforelse
                             </select>
-                            <input class="schedule-form__title-input-text" type="text" name="title" placeholder="タイトルを入力" required>
+                            <input class="schedule-form__title-input-text" type="text" name="title" placeholder="タイトルを入力" maxlength="255" required>
                         </div>
                     </div>
                 </div>
@@ -42,12 +42,16 @@
                             <div class="schedule-form__datetime-datetime">
                                 <div class="schedule-form__datetime-datetime-start">
                                     <input class="schedule-form__start-date-input" type="date" name="start_date" required>
-                                    <input class="schedule-form__start-time-input" type="time" name="start_time">
+                                    <div class="schedule-form__start-time-wrapper">
+                                        <input class="schedule-form__start-time-input schedule-form__time-input" type="time" name="start_time">
+                                    </div>
                                 </div>
                                 <div>～</div>
                                 <div class="schedule-form__datetime-datetime-end">
                                     <input class="schedule-form__end-date-input" type="date" name="end_date" required>
-                                    <input class="schedule-form__end-time-input" type="time" name="end_time">
+                                    <div class="schedule-form__end-time-wrapper">
+                                        <input class="schedule-form__end-time-input schedule-form__time-input" type="time" name="end_time">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +72,7 @@
                 <div class="schedule-form__memo-block">
                     <div class="schedule-form__memo">
                         <div class="schedule-form__memo-label schedule-form__main-label">メモ</div>
-                        <textarea id="schedule-memo" class="schedule-form__memo-textarea" name="memo" placeholder="メモを追加"></textarea>
+                        <textarea id="schedule-memo" class="schedule-form__memo-textarea" name="memo" placeholder="メモを追加" maxlength="65535"></textarea>
                     </div>
                 </div>
 
