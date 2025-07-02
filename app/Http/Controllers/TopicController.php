@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TopicService;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -9,9 +10,10 @@ class TopicController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(TopicService $service)
     {
-        //
+        $topics = $service->getAllTopics(); 
+        return view('topics.index', compact('topics'));
     }
 
     /**
