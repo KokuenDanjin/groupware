@@ -12,15 +12,15 @@
                 <td>
                     <div class="calendar-date-block">
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'month', 'currentDate' => $Calendar->getBeforeMonth()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'month', 'currentDate' => $calendar->getBeforeMonth()]) }}">
                                 <span class="material-symbols-outlined">keyboard_arrow_left</span>
                             </a>
                         </span>
                         <span class="calendar-date">
-                            <a href="{{ route('Calendar.view', ['type' => 'month']) }}">{{ $Calendar->getTitle() }}</a>
+                            <a href="{{ route('calendar.view', ['type' => 'month']) }}">{{ $calendar->getTitle() }}</a>
                         </span>
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'month', 'currentDate' => $Calendar->getNextMonth()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'month', 'currentDate' => $calendar->getNextMonth()]) }}">
                                 <span class="material-symbols-outlined">keyboard_arrow_right</span>
                             </a>
                         </span>
@@ -31,5 +31,5 @@
         </tbody>
     </table>
     
-    <div class="calendar-main-calendar">{!! $Calendar->render() !!}</div>
+    <div class="calendar-main-calendar">{!! $calendar->render() !!}</div>
 </div>

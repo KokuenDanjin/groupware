@@ -120,7 +120,7 @@ abstract class CalendarView {
     */
     function getScheduleAddButton($day):string
     {
-        $scheduleAddBtnRoute = route('schedule.edit.create');
+        $scheduleAddBtnRoute = route('schedule.create', ['date' => $day->getString('Y-m-d')]);
         $html[] = trim('
             <div class="schedule-add-button-block">
                 <a class="schedule-add-button" href="' . $scheduleAddBtnRoute .'">

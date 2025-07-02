@@ -12,25 +12,25 @@
                 <td>
                     <div class="calendar-date-block">
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $Calendar->getBeforeWeek()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $calendar->getBeforeWeek()]) }}">
                                 <span class="material-symbols-outlined">keyboard_double_arrow_left</span>
                             </a>
                         </span>
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $Calendar->getBeforeDay()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $calendar->getBeforeDay()]) }}">
                                 <span class="material-symbols-outlined">keyboard_arrow_left</span>
                             </a>
                         </span>
                         <span class="calendar-date">
-                            <a href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => carbon\carbon::now()->format('Ymd') ]) }}">{{ $Calendar->getCurrentDayString() }}</a>
+                            <a href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => carbon\carbon::now()->format('Ymd') ]) }}">{{ $calendar->getCurrentDayString() }}</a>
                         </span>
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $Calendar->getNextDay()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $calendar->getNextDay()]) }}">
                                 <span class="material-symbols-outlined">keyboard_arrow_right</span>
                             </a>
                         </span>
                         <span>
-                            <a class="calendar-move-button" href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $Calendar->getNextWeek()]) }}">
+                            <a class="calendar-move-button" href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $calendar->getNextWeek()]) }}">
                                 <span class="material-symbols-outlined">keyboard_double_arrow_right</span>
                             </a>
                         </span>
@@ -42,7 +42,7 @@
     </table>
     
     <div class="calendar-main-calendar">
-        {!! $Calendar->render() !!}
+        {!! $calendar->render() !!}
         <table class="calendar-main-table calendar-main-table-weekday calendar-main-table-weekday-data">
             <tbody>
                 <tr>
@@ -50,11 +50,11 @@
                         <td>
                             <div class="calendar-daily calendar-cell {{ ($row === 0 ? 'time-cell' : 'schedule-cell') }}">
                                 @if ($row !== 0)
-                                    {!! $Calendar->scheduleRender() !!}
+                                    {!! $calendar->scheduleRender() !!}
                                 @endif
                             </div>
                             @php
-                                $availabilityTime = $Calendar->getAvailabilityTime();
+                                $availabilityTime = $calendar->getAvailabilityTime();
                                 $startTime = $availabilityTime['startTime'];
                                 $endTime = $availabilityTime['endTime'] + 1;
                             @endphp

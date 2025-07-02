@@ -18,14 +18,14 @@ class CalendarController extends Controller
                 
         switch ($type) {
             case 'week':
-                $Calendar = new CalendarWeekView($carbonDate);
+                $calendar = new CalendarWeekView($carbonDate);
                 break;
             case 'day':
-                $Calendar = new CalendarDayView($carbonDate);
+                $calendar = new CalendarDayView($carbonDate);
                 break;
             case 'month':
             default:
-                $Calendar = new CalendarMonthView($carbonDate);
+                $calendar = new CalendarMonthView($carbonDate);
                 break;
         }
 
@@ -37,7 +37,7 @@ class CalendarController extends Controller
             ]
         ]);
 
-        return view('Calendar.calendar', compact('Calendar', 'type', 'currentDate'));
+        return view('calendar.calendar', compact('calendar', 'type', 'currentDate'));
     }
 
 }

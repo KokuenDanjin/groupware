@@ -27,13 +27,14 @@ class ScheduleRequest extends FormRequest
             'category_id' => ['nullable', 'integer', 'exists:schedule_categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'time_type' => ['required', 'in:normal,all_day,undecided'],
-            'start_date' => ['required', 'date', ],
+            'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'start_time' => ['exclude_unless:time_type,normal', 'required', 'date_format:H:i'],
             'end_time' => ['exclude_unless:time_type,normal', 'required', 'date_format:H:i'],
             'participants' => ['required', 'array'],
             'participants.*' => ['integer', 'exists:users,id'],
-            'memo' => ['nullable', 'string', 'max:65535']
+            'memo' => ['nullable', 'string', 'max:65535'],
+            'private_flg' => ['required', 'boolean']
         ];
 
         return $rules;

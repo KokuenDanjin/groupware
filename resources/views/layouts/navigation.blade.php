@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('Calendar.view')" :active="request()->routeIs('Calendar.*')">
+                    <x-nav-link :href="route('calendar.view')" :active="request()->routeIs('calendar.*')">
                         {{ __('Calendar') }}
                     </x-nav-link>
                 </div>
@@ -73,7 +73,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('Calendar.view')" :active="request()->routeIs('Calendar.*')">
+            <x-responsive-nav-link :href="route('calendar.view')" :active="request()->routeIs('calendar.*')">
                 {{ __('Calendar') }}
             </x-responsive-nav-link>
         </div>

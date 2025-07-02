@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 日時入力欄の表示/非表示制御
     const timeInputs = document.querySelectorAll('.schedule-form__time-input');
 
     function toggleTimeInputs(value) {
@@ -26,4 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleTimeInputs(this.value);
         });
     });
+
+
+    // multiple属性付きselectタグの制御
+    // シングルクリックで選択をトグル可能にする
+    const multiples = document.querySelectorAll('select[multiple]');
+    multiples.forEach(multiple => {
+        Array.from(multiple.options).forEach(option => {
+            option.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                this.selected = !this.selected;
+            });
+        });
+    })
 });

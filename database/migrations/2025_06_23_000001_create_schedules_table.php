@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->foreignId('category_id')->nullable()->constrained('schedule_categories')->cascadeOnDelete();
             $table->enum('time_type', ['normal', 'all_day', 'undecided'])->default('normal');
-            $table->dateTime('start_time')->nullable();
-            $table->dateTime('end_time')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->boolean('private_flg')->default(false)->comment('true:非公開, false:公開');
             $table->text('memo')->nullable();
             $table->timestamps();

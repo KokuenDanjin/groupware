@@ -12,15 +12,15 @@
                             <div class="calendar-changeView-items">
                                 @if($type === 'month')
                                 <div class="calendar-changeView-item"><span class="calendar-changeView-active">月</span></div>
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'week', 'currentDate' => $currentDate] ) }}">週</a></div>
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $currentDate] ) }}">日</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'week', 'currentDate' => $currentDate] ) }}">週</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $currentDate] ) }}">日</a></div>
                                 @elseif ($type === 'week')
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'month'] ) }}">月</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'month'] ) }}">月</a></div>
                                 <div class="calendar-changeView-item"><span class="calendar-changeView-active">週</span></div>
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'day', 'currentDate' => $currentDate] ) }}">日</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'day', 'currentDate' => $currentDate] ) }}">日</a></div>
                                 @elseif ($type === 'day')
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'month'] ) }}">月</a></div>
-                                <div class="calendar-changeView-item"><a href="{{ route('Calendar.view', ['type' => 'week', 'currentDate' => $currentDate] ) }}">週</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'month'] ) }}">月</a></div>
+                                <div class="calendar-changeView-item"><a href="{{ route('calendar.view', ['type' => 'week', 'currentDate' => $currentDate] ) }}">週</a></div>
                                 <div class="calendar-changeView-item"><span class="calendar-changeView-active">日</span></div>
                                 @endif
                             </div>
@@ -34,11 +34,11 @@
 
         <div class="calendar-mainarea calendar-container">
             @if ($type === 'month')
-                @include('calendar.month', ['calendar' => $Calendar])
+                @include('calendar.month', ['calendar' => $calendar])
             @elseif ($type === 'week')
-                @include('calendar.week', ['calendar' => $Calendar])
+                @include('calendar.week', ['calendar' => $calendar])
             @elseif ($type === 'day')
-                @include('calendar.day', ['calendar' => $Calendar])
+                @include('calendar.day', ['calendar' => $calendar])
             @endif
         </div>
     </div>
