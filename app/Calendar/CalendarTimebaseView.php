@@ -9,6 +9,9 @@
 
 namespace App\Calendar;
 
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+
 abstract class CalendarTimebaseView extends CalendarView {
 
     function __construct($date)
@@ -33,27 +36,44 @@ abstract class CalendarTimebaseView extends CalendarView {
     /**
     * スケジュールパネルのポジションを計算するメソッド
     *
-    * @param int $scheduleStartTime 表示スケジュールの開始時間 h
-    * @param int $scheduleEndTime  表示スケジュールの終了時間 h
+    * @param int $scheduleStartTime タイムライン表示の開始時間 h
+    * @param int $scheduleEndTime  タイムライン表示の終了時間 h
+    * @param int $timeType time_typeカラムの値　normal or all_day or undecided
     * @param string $startTimestamp スケジュールの開始時間 UNIXタイムスタンプ
     * @param string $endTimestamp スケジュールの終了時間 UNIXタイムスタンプ
     *
     * @return array パネルの位置、大きさ
     */
-    function getSchedulePanelPosition($scheduleStartTime, $scheduleEndTime, $startTimestamp, $endTimestamp):array
+    function getSchedulePanelPosition(
+        $scheduleStartTime,
+        $scheduleEndTime,
+        $timeType,
+        $startTimestamp = null,
+        $endTimestamp = null
+    ):array
     {
-        // ベース時間（表示スケジュールの開始時間）
-        $baseTime = strtotime(date('Ymd', $startTimestamp) . sprintf('%02d00', $scheduleStartTime)) - 3600 ; // 1行目は終日予定用なのでずらす
-        // 終日予定の場合の処理
+        $timeHeight = 60;
 
         // スケジュールが表示時間外の場合の処理
 
-        $minutesFromBase = ($startTimestamp - $baseTime) / 60; // ベース時間からの分差
-        $durationMinutes = ($endTimestamp - $startTimestamp) / 60; // スケジュールの時間（分）
+        if ($timeType === 'normal') {
+            // ベース時間（表示スケジュールの開始時間）
+            $timelineTop = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleStartTime));
+            $baseTime = $timelineTop - 3600; // 1行目は終日予定用なのでずらす
+
+            $topPx = ($startTimestamp - $baseTime) / 60 * ($timeHeight / 60); // ベース時間からの分差
+            $heightPx = ($endTimestamp - $startTimestamp) / 60 * ($timeHeight / 60); // スケジュールの時間（分）
+        } elseif ($timeType === 'all_day') {
+            $topPx = $timeHeight;
+            $heightPx = ($scheduleEndTime - $scheduleStartTime + 1) * $timeHeight; // スケジュールの時間（分）
+        } else {
+            $topPx = 0; // タイムライン上部
+            $heightPx = 16;
+        };
 
         return [
-            'top' => $minutesFromBase . 'px',
-            'height' => $durationMinutes . 'px',
+            'top' => $topPx . 'px',
+            'height' => $heightPx .'px',
             'width' => '100%'
         ];
     }
@@ -69,40 +89,78 @@ abstract class CalendarTimebaseView extends CalendarView {
     }
 
     /**
+    * scheduleRenderを使用してスケジュールをレンダリングするメソッド
+    *
+    * @param string $date Y-m-d
+    * @param int $days 何日間分のスケジュールかを指定
+    *
+    * @return Collection 日ごとにグループ化したスケジュール
+    */
+    function callScheduleRender($date, $days = 1):Collection
+    {
+        $startDate = Carbon::parse($date);
+        $endDate = $startDate->copy()->addDay($days - 1);
+
+        $groupedSchedules = $this->getGroupedSchedulesByDateRange(
+            $startDate->toDateString(),
+            $endDate->toDateString()
+        );
+
+        $rendered = [];
+
+        foreach ($groupedSchedules as $dateKey => $schedules) {
+            foreach ($schedules as $schedule) {
+                $rendered[$dateKey][] = $this->scheduleRender($schedule);
+            }
+        }
+        
+        return collect($rendered);
+    }
+
+    /**
     * スケジュールをレンダリングするメソッド
+    *
+    * @param Collection scheduleテーブルのレコード1行
     *
     * @return string スケジュールのhtml
     */
-    function scheduleRender(): string
+    function scheduleRender($schedule): string
     {
-        // 仮データ
-        $schedule = [
-            'id' => 1,
-            'title' => 'カネスエ',
-            'categoryId' => null,
-            'startTime' => '202506201230',
-            'endTime' => '202506201410',
-        ];
+        $timeType = $schedule->time_type;
 
-        $scheduleAvailabilityTime = $this->getAvailabilityTime();
+        // パネル表示データ
+        $scheduleContents = [];
         
-        $scheduleStartTime = strtotime($schedule['startTime']);
-        $scheduleEndTime = strtotime($schedule['endTime']);
+        // カレンダーの時間の表示範囲
+        $scheduleAvailabilityTime = $this->getAvailabilityTime();
 
-        $styles = $this->getSchedulePanelPosition(
+        $paramForGetSchedulePanelPosition = [
             $scheduleAvailabilityTime['startTime'],
             $scheduleAvailabilityTime['endTime'],
-            $scheduleStartTime,
-            $scheduleEndTime
-        );
-        $styleAttribute = $this->getStyleAttributeString($styles);
+            $timeType,
+        ];
+        if ($timeType === 'normal') {
+            $scheduleStartTime = strtotime($schedule->start_date . ' ' . $schedule->start_time);
+            $scheduleEndTime = strtotime($schedule->end_date . ' ' . $schedule->end_time);
 
-        $scheduleContents = [];
-        $scheduleContents[] = date('H:i', $scheduleStartTime) . '～' . date('H:i', $scheduleEndTime); // MM:DD～MM:DD
-        if ($schedule['categoryId']) $scheduleContents[] = $schedule['categoryId'] . '：'; // カテゴリ
-        $scheduleContents[] = $schedule['title']; // タイトル
+            $scheduleContents[] = date('H:i', $scheduleStartTime) . '～' . date('H:i', $scheduleEndTime); // MM:DD～MM:DD
+
+            $paramForGetSchedulePanelPosition[] = $scheduleStartTime;
+            $paramForGetSchedulePanelPosition[] = $scheduleEndTime;
+        } elseif ($timeType === 'all_day') {
+            $scheduleContents[] = '終日';
+        } else {
+            $scheduleContents[] = '時間未定';
+        };
+
+        if ($schedule->schedule_category) $scheduleContents[] = $schedule->schedule_category->name . '：'; // カテゴリ
+        $scheduleContents[] = $schedule->title; // タイトル
 
         $scheduleText = implode(' ', $scheduleContents);
+        
+        // Style
+        $styles = $this->getSchedulePanelPosition(...$paramForGetSchedulePanelPosition);
+        $styleAttribute = $this->getStyleAttributeString($styles);
 
         // 最終HTML
         $html = [];
@@ -114,5 +172,4 @@ abstract class CalendarTimebaseView extends CalendarView {
 
         return implode('', $html);
     }
-
 }

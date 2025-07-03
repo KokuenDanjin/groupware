@@ -8,6 +8,9 @@
 
 namespace App\Calendar;
 
+use App\Models\schedule;
+use Illuminate\Support\Collection;
+
 class CalendarMonthView extends CalendarView {
 
     function __construct($date) 
@@ -59,30 +62,23 @@ class CalendarMonthView extends CalendarView {
     /**
     * スケジュールをレンダリングするメソッド
     *
+    * @param Collection scheduleテーブルのレコード1行
+    *
     * @return string スケジュールのhtml
     */
-    function scheduleRender(): string
-    {
-        // 仮データ
-        $schedule = [
-            'id' => 1,
-            'title' => 'カネスエ',
-            'categoryId' => null,
-            'startTime' => '202506201230',
-            'endTime' => '202506201410',
-        ];
-
+    function scheduleRender($schedule): string
+    {   
         $scheduleContents = [];
-        if ($schedule['categoryId']) $scheduleContents[] = $schedule['categoryId'] . '：'; // カテゴリ
-        $scheduleContents[] = $schedule['title']; // タイトル
+        if ($schedule->schedule_category) $scheduleContents[] = $schedule->schedule_category->name . '：'; // カテゴリ
+        $scheduleContents[] = $schedule->title; // タイトル
 
         $scheduleText = implode(' ', $scheduleContents);
 
         $html = [];
 
         $html[] = trim('
-            <div class="schedule-panel" data-schedule-id=' . e($schedule['id']) . '>
-                <p class="schedule-text">' . $scheduleText . '</p>
+            <div class="schedule-panel" data-schedule-id="' . e($schedule->id) . '">
+                <p class="schedule-text">' . e($scheduleText) . '</p>
             </div>
         ');
 
@@ -116,6 +112,11 @@ class CalendarMonthView extends CalendarView {
         ');
 
         // データ
+        // スケジュールを読み込んでおく
+        $firstDate = $this->carbon->startOfMonth()->startOfWeek()->format('Y-m-d'); // カレンダー表示範囲の初日
+        $lastDate = $this->carbon->lastOfMonth()->endOfWeek()->format('Y-m-d'); // カレンダー表示範囲の最終日
+        $monthlySchedules = $this->getGroupedSchedulesByDateRange($firstDate, $lastDate);
+
         $weeks = $this->getWeeks();
         foreach ($weeks as $week) {
             $html[] = '<tr class="' . $week->getClassName() . '">';
@@ -138,9 +139,11 @@ class CalendarMonthView extends CalendarView {
                 ');
                 
                 // ----スケジュールのレンダリングエリア----
-                $html[] = $this->scheduleRender();
+                $daySchedules = $monthlySchedules[$day->getString('Y-m-d')] ?? collect();
+                foreach ($daySchedules as $schedule) {
+                    $html[] = $this->scheduleRender($schedule);
+                };
                 
-
                 $html[] = trim('
                             </div>
                         </div>

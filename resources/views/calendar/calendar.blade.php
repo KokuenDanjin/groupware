@@ -33,13 +33,34 @@
         <hr>
 
         <div class="calendar-mainarea calendar-container">
-            @if ($type === 'month')
-                @include('calendar.month', ['calendar' => $calendar])
-            @elseif ($type === 'week')
-                @include('calendar.week', ['calendar' => $calendar])
-            @elseif ($type === 'day')
-                @include('calendar.day', ['calendar' => $calendar])
-            @endif
+            <div class="calendar-contents">
+                <table class="calendar-navarea">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <form class="calendar-userselect-form" action="">
+                                    <select name="user" id="user">
+                                        @foreach ($users as $user)
+                                        <option value="{{ $user->id }}" {{ $user->is(Auth::user()) ? 'selected' : '' }}>{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                @include('calendar.date_block', ['type' => $type, 'currentDate' => $currentDate])
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                @if ($type === 'month')
+                    @include('calendar.month', ['calendar' => $calendar])
+                @else
+                    @include('calendar.timebase', ['calendar' => $calendar])
+                @endif
+
+            </div>
         </div>
     </div>
 </x-app-layout>

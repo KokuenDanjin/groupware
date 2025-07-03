@@ -8,7 +8,9 @@
 
 namespace App\Calendar;
 
+use App\Models\schedule;
 use Carbon\Carbon;
+use \Illuminate\Support\Collection;
 
 
 abstract class CalendarView {
@@ -34,63 +36,63 @@ abstract class CalendarView {
     }
 
     /**
-    * 前日の日付をYmd形式で取得するメソッド
+    * 前日の日付をY-m-d形式で取得するメソッド
     *
-    * @return string 前の日（例：20250615）
+    * @return string 前の日（例：2025-06-15）
     */
     function getBeforeDay(): string
     {
-        return $this->carbon->copy()->subDay()->format('Ymd');
+        return $this->carbon->copy()->subDay()->format('Y-m-d');
     }
 
     /**
-    * 翌日の日付をYmd形式で取得するメソッド
+    * 翌日の日付をY-m-d形式で取得するメソッド
     *
-    * @return string 次の日（例：20250617）
+    * @return string 次の日（例：2025-06-17）
     */
     function getNextDay(): string
     {
-        return $this->carbon->copy()->addDay()->format('Ymd');
+        return $this->carbon->copy()->addDay()->format('Y-m-d');
     }
 
     /**
-    * 1週間前の日付をYmd形式で取得するメソッド
+    * 1週間前の日付をY-m-d形式で取得するメソッド
     *
-    * @return string 前の週（例：20250609）
+    * @return string 前の週（例：2025-06-09）
     */
     function getBeforeWeek(): string
     {
-        return $this->carbon->copy()->subWeek()->format('Ymd');
+        return $this->carbon->copy()->subWeek()->format('Y-m-d');
     }
     
     /**
-    * 1週間後の日付をYmd形式で取得するメソッド
+    * 1週間後の日付をY-m-d形式で取得するメソッド
     *
-    * @return string 次の週（例：20250623）
+    * @return string 次の週（例：2025-06-23）
     */
     function getNextWeek(): string
     {
-        return $this->carbon->copy()->addWeek()->format('Ymd');
+        return $this->carbon->copy()->addWeek()->format('Y-m-d');
     }
 
     /**
-    * 前の月の1日をYmd形式で取得するメソッド
+    * 前の月の1日をY-m-d形式で取得するメソッド
     *
-    * @return string 前の月（例：20250501）
+    * @return string 前の月（例：2025-05-01）
     */
     function getBeforeMonth(): string
     {
-        return $this->carbon->copy()->startOfMonth()->subMonth()->format('Ymd');
+        return $this->carbon->copy()->startOfMonth()->subMonth()->format('Y-m-d');
     }
     
     /**
-    * 次の月の1日Ymd形式で取得するメソッド
+    * 次の月の1日Y-m-d形式で取得するメソッド
     *
-    * @return string 次の月（例：20250701）
+    * @return string 次の月（例：2025-07-01）
     */
     function getNextMonth(): string
     {
-        return $this->carbon->copy()->startOfMonth()->addMonth()->format('Ymd');
+        return $this->carbon->copy()->startOfMonth()->addMonth()->format('Y-m-d');
     }
 
     /**
@@ -133,10 +135,33 @@ abstract class CalendarView {
     }
 
     /**
+    * 日付指定範囲分のスケジュールを取得するメソッド
+    *
+    * @param String $startDate 開始日 Y-m-d
+    * @param String $endDate 終了日 Y-m-d 省略すると単日
+    *
+    * @return Collection
+    */
+    function getGroupedSchedulesByDateRange($startDate, $endDate = null): Collection
+    {
+        if ($startDate && $endDate) {
+            return schedule::whereBetween('start_date', [$startDate, $endDate])
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy('start_date');
+        } else {
+            return schedule::where('start_date', $startDate)
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy('start_date');
+        }
+    }
+
+    /**
     * スケジュールをレンダリングするメソッド
     *
     * @return string スケジュールのhtml
     */
-    abstract function scheduleRender(): string;
+    abstract function scheduleRender($schedule): string;
 
 }

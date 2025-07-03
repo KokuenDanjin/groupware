@@ -48,7 +48,7 @@ class CalendarWeekView extends CalendarTimebaseView {
             $html[] = $day->render("j({$day->getDayOfWeek()})"); // 'フォーマットを日付(曜日)に指定'
 
             $html[] = $this->getScheduleAddButton($day);
-            $html[] = trim('            
+            $html[] = trim('
                     </div>
                 </th>
             ');
