@@ -5,7 +5,7 @@
             <tr>
                 @php
                     $showDays = $type === 'week' ? 7 : 1;
-                    $daysSchedules = $calendar->callScheduleRender($currentDate, $showDays);
+                    $daysSchedules = $calendar->callScheduleRender($userId, $currentDate, $showDays);
                 @endphp
                 @for ($col = 0; $col <= $showDays; $col++)
                     <td>

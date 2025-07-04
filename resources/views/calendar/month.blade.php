@@ -1,1 +1,1 @@
-<div class="calendar-main-calendar">{!! $calendar->render() !!}</div>
+<div class="calendar-main-calendar">{!! $calendar->render($userId) !!}</div>

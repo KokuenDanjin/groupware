@@ -11,7 +11,8 @@ namespace App\Calendar;
 use App\Models\schedule;
 use Carbon\Carbon;
 use \Illuminate\Support\Collection;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 abstract class CalendarView {
     protected $carbon;
@@ -122,7 +123,9 @@ abstract class CalendarView {
     */
     function getScheduleAddButton($day):string
     {
-        $scheduleAddBtnRoute = route('schedule.create', ['date' => $day->getString('Y-m-d')]);
+        $userId = Request::query('userId', Auth::id());
+
+        $scheduleAddBtnRoute = route('schedule.create', ['date' => $day->getString('Y-m-d')]) . '?' . http_build_query(['userId' => $userId]);
         $html[] = trim('
             <div class="schedule-add-button-block">
                 <a class="schedule-add-button" href="' . $scheduleAddBtnRoute .'">
@@ -137,24 +140,35 @@ abstract class CalendarView {
     /**
     * 日付指定範囲分のスケジュールを取得するメソッド
     *
-    * @param String $startDate 開始日 Y-m-d
-    * @param String $endDate 終了日 Y-m-d 省略すると単日
+    * @param array $options [
+    *                   'start' => string 'Y-m-d',
+    *                   'end' => string 'Y-m-d', // 省略可(単日指定)
+    *                   'userId' => int  // 省略可(全ユーザー)
+    *               ]
     *
     * @return Collection
     */
-    function getGroupedSchedulesByDateRange($startDate, $endDate = null): Collection
+    function getGroupedSchedulesByDateRange($options): Collection
     {
-        if ($startDate && $endDate) {
-            return schedule::whereBetween('start_date', [$startDate, $endDate])
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy('start_date');
+        $start = $options['start'];
+        $end = $options['end'] ?? null;
+        $userId = $options['userId'] ?? null;
+
+        $query = schedule::query();
+
+        if ($start && $end) {
+            $query->whereBetween('start_date', [$start, $end]);
         } else {
-            return schedule::where('start_date', $startDate)
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy('start_date');
+            $query->where('start_date', $start);
         }
+
+        if ($userId) {
+            $query->whereHas('users', function($q) use ($userId) {
+                $q->where('users.id', $userId);
+            });
+        }
+
+        return $query->orderBy('start_time')->get()->groupBy('start_date');
     }
 
     /**

@@ -91,20 +91,22 @@ abstract class CalendarTimebaseView extends CalendarView {
     /**
     * scheduleRenderを使用してスケジュールをレンダリングするメソッド
     *
+    * @param int $userId 参加者として登録されているユーザー
     * @param string $date Y-m-d
     * @param int $days 何日間分のスケジュールかを指定
     *
     * @return Collection 日ごとにグループ化したスケジュール
     */
-    function callScheduleRender($date, $days = 1):Collection
+    function callScheduleRender($userId, $date, $days = 1):Collection
     {
         $startDate = Carbon::parse($date);
         $endDate = $startDate->copy()->addDay($days - 1);
 
-        $groupedSchedules = $this->getGroupedSchedulesByDateRange(
-            $startDate->toDateString(),
-            $endDate->toDateString()
-        );
+        $groupedSchedules = $this->getGroupedSchedulesByDateRange([
+            'start' => $startDate->toDateString(),
+            'end' => $endDate->toDateString(),
+            'userId' => $userId
+        ]);
 
         $rendered = [];
 

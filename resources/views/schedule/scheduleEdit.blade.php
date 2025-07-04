@@ -66,7 +66,7 @@
                         <div class="schedule-form__participants-label schedule-form__main-label">参加者</div>
                         <select id="participant" class="schedule-form__participants-select" name="participants[]" multiple>
                             @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ in_array($user->id, old('participants', $participants ?? [])) ? 'selected' : '' }}>{{ $user->name }}</option>
+                            <option value="{{ $user->id }}" {{ in_array($user->id, old('participants', $participants ?? [(int) $userId])) ? 'selected' : '' }}>{{ $user->name }}</option>
                             @endforeach
                         </select>
                     </div>

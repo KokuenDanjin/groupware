@@ -8,16 +8,19 @@ use App\Calendar\CalendarMonthView;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CalendarController extends Controller
 {
     function show(Request $request, $type = 'month', $currentDate = null):View
     {
-        $users = User::all();
+        $userId = $request->query('userId', Auth::id());
+
+        $allUsers = User::all();
 
         $carbonDate = $currentDate ? Carbon::createFromFormat('Y-m-d', $currentDate) : now();
-                
+
         switch ($type) {
             case 'week':
                 $calendar = new CalendarWeekView($carbonDate);
@@ -35,13 +38,16 @@ class CalendarController extends Controller
 
         // セッションに記録
         session([
-            'calendar.back' => [
-                'type' => $type,
-                'currentDate' => $currentDate
-            ]
+            'calendar.back' => compact('userId', 'type', 'currentDate')
         ]);
 
-        return view('calendar.calendar', compact('users', 'calendar', 'type', 'currentDate'));
+        return view('calendar.calendar', compact(
+            'userId',
+            'allUsers',
+            'calendar',
+            'type',
+            'currentDate'
+        ));
     }
 
 }

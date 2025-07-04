@@ -88,9 +88,11 @@ class CalendarMonthView extends CalendarView {
     /**
     * カレンダーをレンダリングするメソッド
     *
+    * @param int $userId ユーザーID 表示したいスケジュールの参加者
+    *
     * @return string カレンダーのhtml
     */
-    function render(): string
+    function render($userId): string
     {
         $html = [];
         // ヘッダ
@@ -115,7 +117,11 @@ class CalendarMonthView extends CalendarView {
         // スケジュールを読み込んでおく
         $firstDate = $this->carbon->startOfMonth()->startOfWeek()->format('Y-m-d'); // カレンダー表示範囲の初日
         $lastDate = $this->carbon->lastOfMonth()->endOfWeek()->format('Y-m-d'); // カレンダー表示範囲の最終日
-        $monthlySchedules = $this->getGroupedSchedulesByDateRange($firstDate, $lastDate);
+        $monthlySchedules = $this->getGroupedSchedulesByDateRange([
+            'start' => $firstDate,
+            'end' => $lastDate,
+            'userId' => $userId
+        ]);
 
         $weeks = $this->getWeeks();
         foreach ($weeks as $week) {

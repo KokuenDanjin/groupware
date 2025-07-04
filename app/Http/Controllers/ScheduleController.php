@@ -9,6 +9,7 @@ use App\Models\schedule_user;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\View\View;
 
 class ScheduleController extends Controller
@@ -35,6 +36,7 @@ class ScheduleController extends Controller
     {
         $contents = $this->getCommonContents();
 
+        $contents['userId'] = FacadesRequest::query('userId', null);
         $contents['mode'] = 'create';
         $contents['date'] = $date ?? '';
 
@@ -77,6 +79,7 @@ class ScheduleController extends Controller
 
         // routeに渡す値をセッションから取得
         $back = session('calendar.back', [
+            'userId' => null,
             'type' => null,
             'currentDate' => null
         ]);
@@ -89,6 +92,7 @@ class ScheduleController extends Controller
 
         // routeに渡す値をセッションから取得
         $back = session('calendar.back', [
+            'userId' => null,
             'type' => null,
             'currentDate' => null
         ]);
