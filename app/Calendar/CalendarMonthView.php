@@ -115,8 +115,8 @@ class CalendarMonthView extends CalendarView {
 
         // データ
         // スケジュールを読み込んでおく
-        $firstDate = $this->carbon->startOfMonth()->startOfWeek()->format('Y-m-d'); // カレンダー表示範囲の初日
-        $lastDate = $this->carbon->lastOfMonth()->endOfWeek()->format('Y-m-d'); // カレンダー表示範囲の最終日
+        $firstDate = $this->carbon->copy()->startOfMonth()->startOfWeek()->toDateString(); // カレンダー表示範囲の初日
+        $lastDate = $this->carbon->copy()->lastOfMonth()->endOfWeek()->toDateString(); // カレンダー表示範囲の最終日
         $monthlySchedules = $this->getGroupedSchedulesByDateRange([
             'start' => $firstDate,
             'end' => $lastDate,
