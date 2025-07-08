@@ -32,13 +32,13 @@ class ScheduleController extends Controller
         return view('schedule.scheduleShow', ['id' => $id]);
     }
 
-    function create($date = null):view
+    function create():view
     {
         $contents = $this->getCommonContents();
 
         $contents['userId'] = FacadesRequest::query('userId', null);
         $contents['mode'] = 'create';
-        $contents['date'] = $date ?? '';
+        $contents['currentDate'] = FacadesRequest::query('currentDate', null);
 
         return view('schedule.scheduleEdit', $contents);
     }

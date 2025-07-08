@@ -39,61 +39,73 @@ abstract class CalendarView {
     /**
     * 前日の日付をY-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 前の日（例：2025-06-15）
     */
-    function getBeforeDay(): string
+    static function getBeforeDay($date = null): string
     {
-        return $this->carbon->copy()->subDay()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->subDay()->toDateString();
     }
 
     /**
     * 翌日の日付をY-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 次の日（例：2025-06-17）
     */
-    function getNextDay(): string
+    static function getNextDay($date = null): string
     {
-        return $this->carbon->copy()->addDay()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->addDay()->toDateString();
     }
 
     /**
     * 1週間前の日付をY-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 前の週（例：2025-06-09）
     */
-    function getBeforeWeek(): string
+    static function getBeforeWeek($date = null): string
     {
-        return $this->carbon->copy()->subWeek()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->subWeek()->toDateString();
     }
     
     /**
     * 1週間後の日付をY-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 次の週（例：2025-06-23）
     */
-    function getNextWeek(): string
+    static function getNextWeek($date = null): string
     {
-        return $this->carbon->copy()->addWeek()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->addWeek()->toDateString();
     }
 
     /**
     * 前の月の1日をY-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 前の月（例：2025-05-01）
     */
-    function getBeforeMonth(): string
+    static function getBeforeMonth($date = null): string
     {
-        return $this->carbon->copy()->startOfMonth()->subMonth()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->startOfMonth()->subMonth()->toDateString();
     }
     
     /**
     * 次の月の1日Y-m-d形式で取得するメソッド
     *
+    * @param string $date 日付 Y-m-d ※省略で現在
+    *
     * @return string 次の月（例：2025-07-01）
     */
-    function getNextMonth(): string
+    static function getNextMonth($date = null): string
     {
-        return $this->carbon->copy()->startOfMonth()->addMonth()->format('Y-m-d');
+        return Carbon::parse($date ?? now())->startOfMonth()->addMonth()->toDateString();
     }
 
     /**
@@ -124,8 +136,10 @@ abstract class CalendarView {
     function getScheduleAddButton($day):string
     {
         $userId = Request::query('userId', Auth::id());
+        $currentDate = Request::query('currentDate', now()->toDateString());
 
-        $scheduleAddBtnRoute = route('schedule.create', ['date' => $day->getString('Y-m-d')]) . '?' . http_build_query(['userId' => $userId]);
+        $scheduleAddBtnRoute = route('schedule.create') . '?' . http_build_query(compact('userId', 'currentDate'));
+
         $html[] = trim('
             <div class="schedule-add-button-block">
                 <a class="schedule-add-button" href="' . $scheduleAddBtnRoute .'">

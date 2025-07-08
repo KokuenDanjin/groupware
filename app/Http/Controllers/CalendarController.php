@@ -13,9 +13,10 @@ use Illuminate\View\View;
 
 class CalendarController extends Controller
 {
-    function show(Request $request, $type = 'month', $currentDate = null):View
+    function show(Request $request, $type = 'month'):View
     {
         $userId = $request->query('userId', Auth::id());
+        $currentDate = $request->query('currentDate', Carbon::now()->format('Y-m-d'));
 
         $allUsers = User::all();
 
