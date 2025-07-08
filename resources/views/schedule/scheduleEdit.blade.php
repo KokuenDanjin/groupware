@@ -44,14 +44,14 @@
                             </div>
                             <div class="schedule-form__datetime-datetime">
                                 <div class="schedule-form__datetime-datetime-start">
-                                    <input class="schedule-form__start-date-input schedule-form__date-input" type="date" name="start_date" value="{{ old('start_date', $date ?? $schedule->start_date ?? '') }}" required>
+                                    <input class="schedule-form__start-date-input schedule-form__date-input" type="date" name="start_date" value="{{ old('start_date', $currentDate ?? $schedule->start_date ?? '') }}" required>
                                     <div class="schedule-form__start-time-wrapper">
                                         <input class="schedule-form__start-time-input schedule-form__time-input" type="time" name="start_time" value="{{ old('start_time', $schedule->start_time ?? '') }}">
                                     </div>
                                 </div>
                                 <div>～</div>
                                 <div class="schedule-form__datetime-datetime-end">
-                                    <input class="schedule-form__end-date-input schedule-form__date-input" type="date" name="end_date" value="{{ old('end_date', $date ?? $schedule->end_date ?? '') }}" required>
+                                    <input class="schedule-form__end-date-input schedule-form__date-input" type="date" name="end_date" value="{{ old('end_date', $currentDate ?? $schedule->end_date ?? '') }}" required>
                                     <div class="schedule-form__end-time-wrapper">
                                         <input class="schedule-form__end-time-input schedule-form__time-input" type="time" name="end_time" value="{{ old('end_time', $schedule->end_time ?? '') }}">
                                     </div>
