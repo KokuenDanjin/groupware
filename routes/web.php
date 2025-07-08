@@ -20,12 +20,11 @@ Route::middleware('auth')->group(function () {
 });
 
 // カレンダー
-Route::get('calendar/{type?}/{currentDate?}', [CalendarController::class, 'show'])
+Route::get('calendar/{type?}', [CalendarController::class, 'show'])
     ->middleware('auth')
     ->name('calendar.view')
     ->where([
-        'type' => 'month|week|day',
-        'currentDate' => '\d{4}-\d{2}-\d{2}' //Y-m-d
+        'type' => 'month|week|day'
     ]);
 
 // スケジュール
