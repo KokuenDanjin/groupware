@@ -18,7 +18,7 @@
                                         @if($type === $viewType)
                                             <span class="calendar-changeView-active">{{ $label }}</span>
                                         @else
-                                            <a href="{{ route('calendar.view', ['type' => $viewType, 'currentDate' => $currentDate] ) . '?' . http_build_query(['userId' => $userId]) }}">{{ $label }}</a>
+                                            <a href="{{ route('calendar.view', ['type' => $viewType] ) . '?' . http_build_query(['userId' => $userId, 'currentDate' => $currentDate]) }}">{{ $label }}</a>
                                         @endif
                                     </div>
                                 @endforeach
