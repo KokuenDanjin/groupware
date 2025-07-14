@@ -28,8 +28,12 @@ class ScheduleController extends Controller
 
     function show($id):View
     {
-        
-        return view('schedule.scheduleShow', ['id' => $id]);
+        $schedule = schedule::find($id);
+        if(!$schedule) {
+            abort(404, 'スケジュールが見つかりません');
+        };
+
+        return view('schedule.scheduleShow', compact('id', 'schedule'));
     }
 
     function create():view
