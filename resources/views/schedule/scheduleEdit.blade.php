@@ -4,6 +4,9 @@
         <div class="schedule-container">
             @include('schedule.components.back-to-calendar-button')
             <form class="schedule-form" method="POST" action="{{ $mode === 'edit' ? route('schedule.update', ['id' => $id ]) : route('schedule.store') }}">
+                @if ($mode === 'edit')
+                    @method('patch')
+                @endif
                 @csrf
                 <div class="schedule-form__title-block">
                     <div class="schedule-form__title">
