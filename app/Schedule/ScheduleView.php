@@ -50,7 +50,7 @@ class ScheduleView {
             if ($timeType === 'normal') $dateString[] = ' ' . $startTime;
             $dateString[] = ' ～ ';
             $dateString[] = $endDate;
-            if ($timeType === 'normal') $dateString[] = ' ' > $endTime;
+            if ($timeType === 'normal') $dateString[] = ' ' . $endTime;
         }
         if ($timeType === 'all_day') $dateString[] = ' （終日予定）';
         if ($timeType === 'undecided') $dateString[] = ' （時間未定）'; 
