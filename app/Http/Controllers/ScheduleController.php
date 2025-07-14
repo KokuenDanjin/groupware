@@ -91,8 +91,23 @@ class ScheduleController extends Controller
         return redirect()->route('calendar.view', $back)->with('success', 'スケジュールを登録しました。');
     }
 
-    function update():RedirectResponse
+    function update(ScheduleRequest $request):RedirectResponse
     {
+        $validated = $request->validated();
+        $schedule = schedule::findOrFail($request->route('id'));
+        $schedule->update([
+            'title' => $validated['title'],
+            'category_id' => $validated['category_id'] ?? null,
+            'time_type' => $validated['time_type'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'start_time' => $validated['time_type'] === 'normal' ? $validated['start_time'] : null,
+            'end_time' => $validated['time_type'] === 'normal' ? $validated['end_time'] : null,
+            'private_flg' => $validated['private_flg'],
+            'memo' => $validated['memo'] ?? null
+        ]);
+
+        $schedule->users()->sync($validated['participants']);
 
         // routeに渡す値をセッションから取得
         $back = session('calendar.back', [
@@ -100,6 +115,7 @@ class ScheduleController extends Controller
             'type' => null,
             'currentDate' => null
         ]);
+
 
         return redirect()->route('calendar.view', $back)->with('success', 'スケジュールを登録しました。');
     }
