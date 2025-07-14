@@ -23,7 +23,7 @@
                                     'schedule__detail',
                                     'schedule__detail__no-data' => empty($schedule->memo)
                                 ])>
-                                <div>{!! nl2br(e($schedule->memo) ?? 'なし') !!}</div>
+                                <div>{!! nl2br(e($schedule->memo) ?: 'なし') !!}</div>
                             </td>
                         </tr>
                     </tbody>
@@ -31,7 +31,7 @@
             </div>
             <ul class="schedule__nav">
                 <li>
-                    <a class="schedule__nav__button schedule__nav__button-edit" href="{{ route('schedule.edit', ['id' => $id]) }}">
+                    <a class="schedule__nav__button schedule__nav__button-edit" href="{{ route('schedule.edit', ['id' => $schedule->id]) }}">
                         <span class="material-symbols-outlined schedule__nav__icon">edit_document</span>
                         <span>変更</span>
                     </a>
