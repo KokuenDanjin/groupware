@@ -3,23 +3,28 @@
     <div class="schedule-main">
         <div class="schedule-container">
             @include('schedule.components.back-to-calendar-button')
-            <div class="schedule__title">買い物：カネスエ</div>
+            <div class="schedule__title">{{ $schedule->category_id ? $schedule->category->name . '：' : '' }}{{ $schedule->title }}</div>
             <div class="schedule__detail">
                 <table class="schedule__detail__table">
                     <tbody>
                         <tr>
                             <th>日時</th>
-                            <td>2025/06/25（水）　12:30 ～ 14:20</td>
+                            <td>{{ \App\Schedule\ScheduleView::dateRender($schedule) }}</td>
                         </tr>
                         <tr>
                             <th>参加者</th>
                             <td>
-                                <div>レオン・S・ケネディ</div>
+                                <div>{{ $schedule->users->pluck('name')->join(', ') ?: 'NoData' }}</div>
                             </td>
                         </tr>
                         <tr>
                             <th>メモ</th>
-                            <td class="schedule__detail__no-data">なし</td>
+                            <td @class([
+                                    'schedule__detail',
+                                    'schedule__detail__no-data' => empty($schedule->memo)
+                                ])>
+                                <div>{!! nl2br(e($schedule->memo) ?? 'なし') !!}</div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
