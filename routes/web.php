@@ -37,7 +37,7 @@ Route::middleware('auth')->prefix('/schedule')->name('schedule.')->group(functio
 Route::middleware('auth')->prefix('/schedule/{id}')->name('schedule.')->group(function() {
     Route::get('', [ScheduleController::class, 'show'])->name('show');
     Route::get('edit', [ScheduleController::class, 'edit'])->name('edit');
-    Route::post('update', [ScheduleController::class, 'update'])->name('update');
+    Route::patch('update', [ScheduleController::class, 'update'])->name('update');
 });
 
 
