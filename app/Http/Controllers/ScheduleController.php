@@ -28,10 +28,7 @@ class ScheduleController extends Controller
 
     function show($id):View
     {
-        $schedule = schedule::find($id);
-        if(!$schedule) {
-            abort(404, 'スケジュールが見つかりません');
-        };
+        $schedule = schedule::findOrFail($id);
 
         return view('schedule.scheduleShow', compact('id', 'schedule'));
     }
@@ -52,10 +49,7 @@ class ScheduleController extends Controller
         $contents = $this->getCommonContents();
         $contents['mode'] = 'edit'; 
         
-        $schedule = schedule::find($id);
-        if(!$schedule) {
-            abort(404, 'スケジュールが見つかりません');
-        }
+        $schedule = schedule::findOrFail($id);
         $contents['id'] = $id;
         $contents['schedule'] = $schedule;
         $contents['participants'] = $schedule->users()->pluck('id')->toArray();
@@ -91,10 +85,10 @@ class ScheduleController extends Controller
         return redirect()->route('calendar.view', $back)->with('success', 'スケジュールを登録しました。');
     }
 
-    function update(ScheduleRequest $request):RedirectResponse
+    function update(ScheduleRequest $request, $id):RedirectResponse
     {
         $validated = $request->validated();
-        $schedule = schedule::findOrFail($request->route('id'));
+        $schedule = schedule::findOrFail($id);
         $schedule->update([
             'title' => $validated['title'],
             'category_id' => $validated['category_id'] ?? null,
@@ -116,7 +110,21 @@ class ScheduleController extends Controller
             'currentDate' => null
         ]);
 
-
         return redirect()->route('calendar.view', $back)->with('success', 'スケジュールを登録しました。');
+    }
+
+    function delete($id):RedirectResponse
+    {
+        $schedule = schedule::findOrFail($id);
+        $schedule->delete();
+
+        // routeに渡す値をセッションから取得
+        $back = session('calendar.back', [
+            'userId' => null,
+            'type' => null,
+            'currentDate' => null
+        ]);
+
+        return redirect()->route('calendar.view', $back)->with('success', 'スケジュールを削除しました。');
     }
 }
