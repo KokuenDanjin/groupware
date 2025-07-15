@@ -37,10 +37,14 @@
                     </a>
                 </li>
                 <li>
-                    <a class="schedule__nav__button schedule__nav__button-delete">
-                        <span class="material-symbols-outlined schedule__nav__icon">delete</span> 
-                        <span>削除</span>
-                    </a>
+                    <form action="{{ route('schedule.delete', ['id' => $schedule->id]) }}" method="POST">
+                        @method('delete')
+                        @csrf
+                        <button class="schedule__nav__button schedule__nav__button-delete" type='submit'>
+                            <span class="material-symbols-outlined schedule__nav__icon">delete</span> 
+                            <span>削除</span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
