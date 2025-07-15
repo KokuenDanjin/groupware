@@ -38,6 +38,7 @@ Route::middleware('auth')->prefix('/schedule/{id}')->name('schedule.')->group(fu
     Route::get('', [ScheduleController::class, 'show'])->name('show');
     Route::get('edit', [ScheduleController::class, 'edit'])->name('edit');
     Route::patch('update', [ScheduleController::class, 'update'])->name('update');
+    Route::delete('delete', [ScheduleController::class, 'delete'])->name('delete');
 });
 
 
