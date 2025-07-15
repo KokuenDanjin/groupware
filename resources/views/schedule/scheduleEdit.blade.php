@@ -89,11 +89,11 @@
                             $private_flg = old('private_flg') ?? $schedule->private_flg ?? 0; 
                         @endphp
                         <label class="schedule-form__private-label schedule-form__label-for-radio" for="private-flg--private">
-                            <input id="private-flg--private" class="schedule-form__private-flg-input" type="radio" name="private_flg" value="0" {{ $private_flg === 0 ? 'checked' : '' }}>
+                            <input id="private-flg--private" class="schedule-form__private-flg-input" type="radio" name="private_flg" value="0" {{ $private_flg == 0 ? 'checked' : '' }}>
                             公開
                         </label>
                         <label class="schedule-form__public-label schedule-form__label-for-radio" for="private-flg--public">
-                            <input id="private-flg--public" class="schedule-form__private-flg-input" type="radio" name="private_flg" value="1" {{ $private_flg === 1 ? 'checked' : '' }}>
+                            <input id="private-flg--public" class="schedule-form__private-flg-input" type="radio" name="private_flg" value="1" {{ $private_flg == 1 ? 'checked' : '' }}>
                             非公開
                         </label>
                     </div>
