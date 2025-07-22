@@ -136,7 +136,7 @@ abstract class CalendarView {
     function getScheduleAddButton($day):string
     {
         $userId = Request::query('userId', Auth::id());
-        $currentDate = Request::query('currentDate', now()->toDateString());
+        $currentDate = $day->getString('Y-m-d');
 
         $scheduleAddBtnRoute = route('schedule.create') . '?' . http_build_query(compact('userId', 'currentDate'));
 
