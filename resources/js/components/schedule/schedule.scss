@@ -8,6 +8,7 @@ $bg-color-active : #818181;
 $text-color-main : black;
 $text-color-active : azure;
 $text-color-no-data : #999;
+$text-color-error : #e53935;
 $a-text-color : #0a62ad;
 $table-border-color: #c9c9c9;
 $btn-color-back: #4D4D4D;
@@ -211,5 +212,13 @@ body {
         resize: none;
         width: 100%;
         height: 200px;
+    }
+
+    // バリデーションエラー
+    &__error {
+        margin-top: 4px;
+        margin-left: 2px;
+        color: $text-color-error;
+        font-size: 0.85rem;
     }
 }

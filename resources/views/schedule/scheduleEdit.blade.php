@@ -19,7 +19,13 @@
                                 <option disabled>カテゴリがありません</option>
                                 @endforelse
                             </select>
+                            @error('category_id')
+                                <div class="schedule-form__error">{{ $message }}</div>
+                            @enderror
                             <input class="schedule-form__title-input-text" type="text" name="title" placeholder="タイトルを入力" value="{{ old('title', $schedule->title ?? '') }}" maxlength="255" required>
+                            @error('title')
+                                <div class="schedule-form__error">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -48,16 +54,28 @@
                             <div class="schedule-form__datetime-datetime">
                                 <div class="schedule-form__datetime-datetime-start">
                                     <input class="schedule-form__start-date-input schedule-form__date-input" type="date" name="start_date" value="{{ old('start_date', $currentDate ?? $schedule->start_date ?? '') }}" required>
+                                    @error('start_date')
+                                        <div class="schedule-form__error">{{ $message }}</div>
+                                    @enderror
                                     <div class="schedule-form__start-time-wrapper">
                                         <input class="schedule-form__start-time-input schedule-form__time-input" type="time" name="start_time" value="{{ old('start_time', $schedule->start_time ?? '') }}">
                                     </div>
+                                    @error('start_time')
+                                        <div class="schedule-form__error">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div>～</div>
                                 <div class="schedule-form__datetime-datetime-end">
                                     <input class="schedule-form__end-date-input schedule-form__date-input" type="date" name="end_date" value="{{ old('end_date', $currentDate ?? $schedule->end_date ?? '') }}" required>
+                                    @error('end_date')
+                                        <div class="schedule-form__error">{{ $message }}</div>
+                                    @enderror
                                     <div class="schedule-form__end-time-wrapper">
                                         <input class="schedule-form__end-time-input schedule-form__time-input" type="time" name="end_time" value="{{ old('end_time', $schedule->end_time ?? '') }}">
                                     </div>
+                                    @error('end_time')
+                                        <div class="schedule-form__error">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -72,6 +90,9 @@
                             <option value="{{ $user->id }}" {{ in_array($user->id, old('participants', $participants ?? [(int) $userId])) ? 'selected' : '' }}>{{ $user->name }}</option>
                             @endforeach
                         </select>
+                        @error('participants')
+                            <div class="schedule-form__error">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -79,6 +100,9 @@
                     <div class="schedule-form__memo">
                         <div class="schedule-form__memo-label schedule-form__main-label">メモ</div>
                         <textarea id="schedule-memo" class="schedule-form__memo-textarea" name="memo" placeholder="メモを追加" maxlength="65535">{{ old('memo', $schedule->memo ?? '') }}</textarea>
+                        @error('memo')
+                            <div class="schedule-form__error">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -96,6 +120,9 @@
                             <input id="private-flg--public" class="schedule-form__private-flg-input" type="radio" name="private_flg" value="1" {{ $private_flg == 1 ? 'checked' : '' }}>
                             非公開
                         </label>
+                        @error('private_flg')
+                            <div class="schedule-form__error">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
