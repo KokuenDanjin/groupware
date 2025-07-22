@@ -83,7 +83,7 @@ class ScheduleRequest extends FormRequest
                     $startDt = Carbon::createFromFormat('Y-m-d', $startDate);
                     $endDt = Carbon::createFromFormat('Y-m-d', $endDate);
 
-                    if ($endDt->lessThanOrEqualTo($startDt)) {
+                    if ($endDt->lessThan($startDt)) {
                         $validator->errors()->add('end_date', '終了日は開始日と同じか後にしてください。');
                     }
                 } catch (\Exception $e) {
