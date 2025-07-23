@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
+use App\Data\TopicData;
+use App\Models\Topic;
 use App\Repositories\Interfaces\TopicRepositoryInterface;
+use Illuminate\Container\Attributes\DB;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class TopicService
 {
@@ -16,5 +20,12 @@ class TopicService
     public function getAllTopics()
     {
         return $this->topicRepository->getAll();
+    }
+
+    public function createTopic(TopicData $data): Topic
+    {
+        return FacadesDB::transaction(function () use ($data) {
+            return $this->topicRepository->create($data);
+        });
     }
 }

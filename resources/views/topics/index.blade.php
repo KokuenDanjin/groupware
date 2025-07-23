@@ -6,6 +6,12 @@
       <a href="{{ route('topics.create') }}" class="board__new-post-button">＋ 新規投稿</a>
     </div>
 
+    @if (session('success'))
+    <div class="alert alert--success">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <div class="board__list">
       @foreach ($topics as $topic)
         <div class="topic-card">

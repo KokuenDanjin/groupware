@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\TopicData;
+use App\Http\Requests\TopicStoreRequest;
 use App\Services\TopicService;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,7 @@ class TopicController extends Controller
      */
     public function index(TopicService $service)
     {
-        $topics = $service->getAllTopics(); 
+        $topics = $service->getAllTopics();
         return view('topics.index', compact('topics'));
     }
 
@@ -27,9 +29,14 @@ class TopicController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TopicStoreRequest $request, TopicService $service)
     {
-        //
+        $data = TopicData::fromRequest($request);
+
+        $service->createTopic($data);
+
+        return redirect()->route('topics.index')
+            ->with('success', '投稿が完了しました！');
     }
 
     /**
