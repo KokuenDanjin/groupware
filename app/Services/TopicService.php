@@ -28,4 +28,9 @@ class TopicService
             return $this->topicRepository->create($data);
         });
     }
+
+    public function getTopicByIdWithUser(string $id): Topic
+    {
+        return $this->topicRepository->findByIdWithUser($id);
+    }
 }

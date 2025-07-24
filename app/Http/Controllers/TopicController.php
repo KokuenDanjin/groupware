@@ -42,17 +42,20 @@ class TopicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, TopicService $service)
     {
-        //
+        $topic = $service->getTopicByIdWithUser($id);
+        $this->authorize('update', $topic);
+        return view('topics.show', compact('topic'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, TopicService $service)
     {
-        //
+        $topic = $service->getTopicByIdWithUser($id);
+        return view('topics.edit', compact('topic'));
     }
 
     /**

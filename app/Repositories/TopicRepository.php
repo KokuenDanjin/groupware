@@ -20,4 +20,9 @@ class TopicRepository implements TopicRepositoryInterface
             'user_id' => $data->userId,
         ]);
     }
+
+    public function findByIdWithUser(string $id): Topic
+    {
+        return Topic::with('user')->findOrFail($id);
+    }
 }
