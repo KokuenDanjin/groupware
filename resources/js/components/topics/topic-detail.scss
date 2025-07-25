@@ -13,12 +13,6 @@
         padding-bottom: 12px;
     }
 
-    &__title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #222;
-    }
-
     &__user {
         font-size: 0.95rem;
         color: #666;
@@ -27,7 +21,7 @@
     &__body {
         font-size: 1rem;
         color: #444;
-        white-space: pre-wrap;
+        white-space: pre-line;
         line-height: 1.7;
         margin-bottom: 30px;
     }
@@ -45,6 +39,55 @@
         border-radius: 6px;
         text-decoration: none;
         font-weight: 600;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+
+    &__delete {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+
+    &__back {
+        padding: 10px 20px;
+        border: 1px solid #aaa;
+        color: #555;
+        border-radius: 6px;
+        text-decoration: none;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    &__edit,
+    &__delete {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
 
         &:hover {
             background-color: #0056b3;

@@ -13,7 +13,18 @@ class TopicRepository implements TopicRepositoryInterface
         return Topic::with('user')->latest()->get();
     }
 
-    public function create(TopicData $data) {
+    public function findOrFail(string $id): Topic
+    {
+        return Topic::findOrFail($id);
+    }
+
+    public function findByIdWithUser(string $id): Topic
+    {
+        return Topic::with('user')->findOrFail($id);
+    }
+
+    public function create(TopicData $data) 
+    {
         return Topic::create([
             'title'   => $data->title,
             'body'    => $data->body,
@@ -21,8 +32,20 @@ class TopicRepository implements TopicRepositoryInterface
         ]);
     }
 
-    public function findByIdWithUser(string $id): Topic
+    public function update(string $id, TopicData $data)
     {
-        return Topic::with('user')->findOrFail($id);
+        $topic = $this->findOrFail($id); 
+        $topic->update([
+            'title'   => $data->title,
+            'body'    => $data->body,
+            'user_id' => $data->userId,
+        ]);
+
+        return $topic;
+    }
+
+    public function delete(Topic $topic): void
+    {
+        $topic->delete();
     }
 }

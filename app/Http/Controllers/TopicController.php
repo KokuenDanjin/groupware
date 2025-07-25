@@ -45,7 +45,6 @@ class TopicController extends Controller
     public function show(string $id, TopicService $service)
     {
         $topic = $service->getTopicByIdWithUser($id);
-        $this->authorize('update', $topic);
         return view('topics.show', compact('topic'));
     }
 
@@ -61,16 +60,31 @@ class TopicController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TopicStoreRequest $request, string $id, TopicService $service)
     {
-        //
+        $topic = $service->getTopicById($id);
+
+        $this->authorize('update', $topic);
+
+        $data = TopicData::fromRequest($request);
+        $service->updateTopic($id, $data);
+
+        return redirect()->route('topics.show', $id)
+            ->with('success', '投稿を更新しました！');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, TopicService $service)
     {
-        //
+        $topic = $service->getTopicById($id); 
+
+        $this->authorize('delete', $topic); 
+
+        $service->deleteTopic($topic);
+
+        return redirect()->route('topics.index')
+            ->with('success', '投稿を削除しました。');
     }
 }
