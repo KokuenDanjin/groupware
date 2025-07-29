@@ -25,8 +25,8 @@ class CalendarWeekView extends CalendarTimebaseView {
         $html = [];
         // ヘッダ
         $html[] = trim('
-            <div class="calendar-main-weekday-calendar">
-                <table class="calendar-main-table calendar-main-table-weekday">
+            <div class="calendar__main-weekday-calendar">
+                <table class="calendar__main-table calendar__main-table--weekday">
                     <thead>
                         <tr>
                             <th></th>
@@ -36,13 +36,13 @@ class CalendarWeekView extends CalendarTimebaseView {
 
         foreach ($days as $day) {
             $td_classes = [$day->getClassName()];
-            if ($day->isToday()) $td_classes[] = "day-today"; // 「今日」のみクラスを追加
-            if ($day->isSunday()) $td_classes[] = "header-sun";
-            if ($day->isSaturday()) $td_classes[] = "header-sat";
+            if ($day->isToday()) $td_classes[] = "day--today"; // 「今日」のみクラスを追加
+            if ($day->isSunday()) $td_classes[] = "header--sun";
+            if ($day->isSaturday()) $td_classes[] = "header--sat";
             $html[] = '<th class="' . implode(" ", $td_classes) . '">';
 
             $html[] = trim('
-                <div class="calendar-weekday-header-cell calendar-week-header-cell">
+                <div class="calendar__weekday-header-cell calendar__week-header-cell">
                 <div class="spacer"></div>
             ');
             $html[] = $day->render("j({$day->getDayOfWeek()})"); // 'フォーマットを日付(曜日)に指定'
