@@ -1,22 +1,22 @@
 @vite(['resources/js/pages/calendar.js', 'resources/js/components/calendar/index.js'])
 <x-app-layout>
     <div class="calendar-main">
-        <div class="calendar-changeView calendar-container">
+        <div class="calendar__change-view calendar-container">
             <table>
                 <tbody>
                     <tr>
                         <td>
-                            <div class="calendar-changeView-title">スケジュール表示</div>
+                            <div class="calendar__change-view-title">スケジュール表示</div>
                         </td>
                         <td>
-                            <div class="calendar-changeView-items">
+                            <div class="calendar__change-view-items">
                                 @php
                                     $views = ['month' => '月', 'week' => '週', 'day' => '日'];
                                 @endphp
                                 @foreach($views as $viewType => $label)
-                                    <div class="calendar-changeView-item">
+                                    <div class="calendar__change-view-item {{ $type === $viewType ? 'calendar__change-view-item--active' : '' }}">
                                         @if($type === $viewType)
-                                            <span class="calendar-changeView-active">{{ $label }}</span>
+                                            <span>{{ $label }}</span>
                                         @else
                                             <a href="{{ route('calendar.view', ['type' => $viewType] ) . '?' . http_build_query(['userId' => $userId, 'currentDate' => $currentDate]) }}">{{ $label }}</a>
                                         @endif
@@ -31,9 +31,9 @@
 
         <hr>
 
-        <div class="calendar-mainarea calendar-container">
-            <div class="calendar-contents">
-                <table class="calendar-navarea">
+        <div class="calendar__main-area calendar-container">
+            <div class="calendar__contents">
+                <table class="calendar__nav-area">
                     <tbody>
                         <tr>
                             <td>
