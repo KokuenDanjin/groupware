@@ -1,10 +1,28 @@
+// 色
 // 共通
-$bg-color: white;
-$bg-color-hover : lightblue;
-$bg-color-active : #818181;
-$text-color-main : black;
-$text-color-active : azure;
-$table-border-color: #c9c9c9;
+$color-accent-gray-dark: #818181;
+$color-accent-gray-light: #CCC;
+$color-bg-default: white;
+$color-bg-hover : lightblue;
+$color-bg-active : $color-accent-gray-dark;
+$color-text-main : black;
+$color-text-active : azure;
+$color-table-color: #c9c9c9;
+// カレンダー部分共通
+$color-link : #0a62ad;
+$color-text-sunday : red;
+$color-text-saturday : blue;
+$color-bg-sunday : #FFF1F2;
+$color-bg-saturday : #E9F6FE;
+$color-bg-today : #FCFAD5;
+
+// アニメーション
+$animation-hover-bg: background-color .3s ease;
+
+// レイアウト
+$calendar-cell-height: 60px; // 変更禁止（スケジュールのレンダリングに影響）
+$z-schedule-panel: 10;
+
 
 * {
     margin: 0;
@@ -12,13 +30,13 @@ $table-border-color: #c9c9c9;
 }
 
 body {
-    color: $text-color-main;
+    color: $color-text-main;
 }
 
 .calendar-main {
     width : 100%;
     margin-top: 2rem;
-    background-color: $bg-color;
+    background-color: $color-bg-default;
 }
 
 .calendar-container {
@@ -26,152 +44,144 @@ body {
     min-width: 1020px;
 }
 
-/* changeView */
-.calendar-changeView {
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-    display: flex;
-    justify-content: end;
+/* change-view */
+.calendar {
+    &__change-view {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        display: flex;
+        justify-content: end;
+    }
 
-    &-title {
+    &__change-view-title {
         margin: 0 5px 0 3px;
         font-weight: 800;
     }
 
-    &-items {
+    &__change-view-items {
         display: flex;
         border-collapse: collapse;
+    }
 
-        .calendar-changeView-item {
-            border: solid 1px $table-border-color;
-            border-right: 0;
+    &__change-view-item {
+        border: solid 1px $color-table-color;
+        border-right: 0;
 
-            &:last-child {
-                border-right: solid 1px $table-border-color;
-            }
+        &:last-child {
+            border-right: solid 1px $color-table-color;
+        }
 
-            a,
-            span {
-            padding: 6px 24px;
-            display: inline-block;
-            text-align: center;
-            line-height: 1;
-            transition: background-color .3s ease;
-            }
+        a,
+        span {
+        padding: 6px 24px;
+        display: inline-block;
+        text-align: center;
+        line-height: 1;
+        transition: $animation-hover-bg;
+        }
 
-            a:hover {
-            background-color: $bg-color-hover;
-            }
+        a:hover {
+        background-color: $color-bg-hover;
+        }
 
-            span.calendar-changeView-active {
-            background-color: $bg-color-active;
-            color: $text-color-active;
+        &--active {
+            background-color: $color-bg-active;
+            color: $color-text-active;
             user-select: none;
-            }
         }
     }
-}
 
-/* カレンダー共通 */
-$a-text-color : #0a62ad;
-$text-color-sunday : red;
-$text-color-saturday : blue;
-$bg-color-sunday : #FFF1F2;
-$bg-color-saturday : #E9F6FE;
-$bg-color-today : #FCFAD5;
+    /* カレンダー共通 */
+    &__main-area {
+        padding-top: 10px;
 
-
-.calendar-mainarea {
-    padding-top: 10px;
-
-    a {
-        color: $a-text-color;
-    }
-}
-
-.calendar-contents {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.calendar-navarea {
-    width: 100%;
-    table-layout: fixed;
-    
-    td:has(.calendar-userselect-form) {
-        text-align: left;
+        a {
+            color: $color-link;
+        }
     }
 
-    td:has(.calendar-date-block) {
-        text-align: center;
+    &__contents {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    #participantUserSelect {
-        padding: 0 30px 0 4px;
-        box-sizing: border-box;
+    &__nav-area {
+        width: 100%;
+        table-layout: fixed;
+        
+        td:has(.calendar__userselect-form) {
+            text-align: left;
+        }
+
+        td:has(.calendar__date-block) {
+            text-align: center;
+        }
+
+        #participantUserSelect {
+            padding: 0 30px 0 4px;
+            box-sizing: border-box;
+        }
     }
 
-    .calendar-date-block {
+    &__date-block {
         height: 100%;
         display: flex;
         justify-content: center;
         align-items: flex-start;
+    }
 
-        .calendar-move-button {
-            span {
-                color: #818181;
-                vertical-align: bottom;
-                transition: background-color .3s ease;
+    &__move-button {
+        span {
+            color: $color-accent-gray-dark;
+            vertical-align: bottom;
+            transition: $animation-hover-bg;
 
-                &:hover {
-                    background-color: $bg-color-hover;
-                }
-            }
-        }
-
-        .calendar-date {
-            margin: 0 .5rem;
-
-            a {
-                color: $text-color-main;
-                font-weight: 800;
+            &:hover {
+                background-color: $color-bg-hover;
             }
         }
     }
-}
 
-.calendar-main-calendar {
-    width: 100%;
-    margin-top: .5rem;
-}
+    &__date {
+        margin: 0 .5rem;
 
-/* カレンダー本体 共通 */
-.calendar-main-table {
-    width: 100%;
-    table-layout: fixed;
+        a {
+            color: $color-text-main;
+            font-weight: 800;
+        }
+    }
+
+    &__main-calendar {
+        width: 100%;
+        margin-top: .5rem;
+    }
+
+    /* カレンダー本体 共通 */
+    &__main-table {
+        width: 100%;
+        table-layout: fixed;
     
-    th,
-    td {
-        border: solid 1px $table-border-color;
-    }
+        th,
+        td {
+            border: solid 1px $color-table-color;
+        }
 
-    th {
-        font-weight: 400;
-        text-align: center;
-    }
-}
+        th {
+            font-weight: 400;
+            text-align: center;
+        }
 
-.header {
-    &-sun {
-    background-color: $bg-color-sunday;
-    color: $text-color-sunday;
-    }
+        .header--sun {
+            background-color: $color-bg-sunday;
+            color: $color-text-sunday;
+        }
 
-    &-sat {
-    background-color: $bg-color-saturday;
-    color: $text-color-saturday;
+        .header--sat{
+            background-color: $color-bg-saturday;
+            color: $color-text-saturday;
+        }
     }
 }
 
@@ -182,31 +192,30 @@ $bg-color-today : #FCFAD5;
 
     .schedule-add-button-icon {
         padding: 3px;
-        color: #818181;
+        color: $color-accent-gray-dark;
         font-size: 1rem;
         vertical-align: top;
 
         &:hover {
-            border: solid 1px #CCC;
+            border: solid 1px $color-accent-gray-light;
             border-radius: 5px;
         }
     }
 }
 
-
 /* カレンダー本体 月表示 */
-.calendar-main-month-calendar {
-    .day-today {
-        background-color: $bg-color-today;
-    }
+.calendar {
+    &__main-month-calendar {
+        .day--today {
+            background-color: $color-bg-today;
+        }
 
-    td:has(.day) {
-        padding: 4px;
-        vertical-align: top;
-    }
+        td:has(.day) {
+            padding: 4px;
+            vertical-align: top;
+        }
 
-    .day-cell {
-        .calendar-dateblock {
+        .calendar__dateblock {
             height: 1.3rem;
             margin: 0 0 .5rem .2rem;
             display: flex;
@@ -214,49 +223,49 @@ $bg-color-today : #FCFAD5;
             gap: .5rem;
         }
 
-        .calendar-schedule-area {
+        .calendar__schedule-area {
             min-height: 6rem;
             display: flex;
             flex-direction: column;
             gap: .2rem;
         }
     }
-}
 
-/* カレンダー本体 週・日表示 共通 */
-.calendar-main-table-weekday {
-    border-collapse: collapse;
+    /* カレンダー本体 週・日表示 共通 */
+    &__main-table--weekday {
+        border-collapse: collapse;
 
-    th:first-child,
-    td:first-child  {
-        width: 2rem;
+        th:first-child,
+        td:first-child  {
+            width: 2rem;
+        }
+
+        &-data td {
+            border-top: none;
+            position: relative;
+        }
+
+        .schedule-cell {
+            position: relative;
+        }
     }
 
-    &-data td {
-        border-top: none;
-        position: relative;
+    &__weekday-header-cell {
+        height: 1.5rem;
+        display: flex;
+        justify-content: center;
+
+        > div {
+            flex: 1;
+        }
     }
 
-    .schedule-cell {
-        position: relative;
-    }
-}
-
-.calendar-weekday-header-cell {
-    height: 1.5rem;
-    display: flex;
-    justify-content: center;
-
-    > div {
-        flex: 1;
-    }
-}
-
-.calendar-cell {
-    height: 60px; // 変更禁止（スケジュールのレンダリングに影響）
-    
-    &:not(:first-child) {
-    border-top: dashed 1px $table-border-color;
+    &__cell {
+        height: $calendar-cell-height; 
+        
+        &:not(:first-child) {
+        border-top: dashed 1px $color-table-color;
+        }
     }
 }
 
@@ -265,7 +274,7 @@ $bg-color-today : #FCFAD5;
 }
 
 /* カレンダー本体 週表示 */
-.calendar-week-header-cell {
+.calendar__week-header-cell {
     .schedule-add-button-block {
         justify-content: flex-start;
     }
@@ -274,7 +283,7 @@ $bg-color-today : #FCFAD5;
 // スケジュールパネル
 .schedule-panel {
     padding: 0 .3rem;
-    z-index: 10;
+    z-index: $z-schedule-panel;
     background-color: #3584D2;
     border-radius: 2px;
     line-height: 1.1rem;
