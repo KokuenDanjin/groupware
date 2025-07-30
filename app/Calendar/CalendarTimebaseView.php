@@ -59,7 +59,7 @@ abstract class CalendarTimebaseView extends CalendarView {
         if ($timeType === 'normal') {
             // ベース時間（表示スケジュールの開始時間）
             $timelineTop = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleStartTime));
-            $baseTime = $timelineTop - 3600; // 1行目は終日予定用なのでずらす
+            $baseTime = $timelineTop - 3600; // 1行目は時間未定予定用なのでずらす
 
             $topPx = ($startTimestamp - $baseTime) / 60 * ($timeHeight / 60); // ベース時間からの分差
             $heightPx = ($endTimestamp - $startTimestamp) / 60 * ($timeHeight / 60); // スケジュールの時間（分）
@@ -88,6 +88,67 @@ abstract class CalendarTimebaseView extends CalendarView {
         return implode(' ', array_map(fn($prop, $val) => "{$prop}: {$val};", array_keys($styles), $styles));
     }
 
+        
+    /**
+     * 日をまたぐスケジュールを分割するメソッド
+     *
+     * @param Schedule $schedule インスタンス
+     * @return array 分割されたスケジュールの配列
+     */
+    function splitMultiDaySchedule($schedule): array
+    {
+        $start = Carbon::parse($schedule->start_date . ' ' . $schedule->start_time ?? '00:00:00');
+        $end = Carbon::parse($schedule->end_date . ' ' . $schedule->end_time ?? '00:00:00');
+
+        // 同日ならそのまま返す
+        if ($start->isSameDay($end)) {
+            // 元スケジュールの日時情報を保持
+            $schedule->original_start = $start;
+            $schedule->original_end = $end;
+            return [$schedule];
+        }
+
+        $splits = [];
+        $current = $start->copy()->startOfDay();
+
+        while ($current->lte($end)) {
+            $dailyDate = $current->toDateString();
+
+            if ($schedule->time_type === 'all_day') {
+                $dailyStart = '00:00';
+                $dailyEnd = '24:00';
+            } else {
+                if ($current->isSameDay($start)) {
+                    $dailyStart = $start->format('H:i');
+                    $dailyEnd = '24:00';
+                } elseif ($current->isSameDay($end)) {
+                    $dailyStart = '00:00';
+                    $dailyEnd = $end->format('H:i');
+                } else {
+                    $dailyStart = '00:00';
+                    $dailyEnd = '24:00';
+                }
+            }
+
+            $splits[] = (object)[
+                'id' => $schedule->id,
+                'title' => $schedule->title,
+                'time_type' => $schedule->time_type,
+                'schedule_category' => $schedule->schedule_category,
+                'start_date' => $dailyDate,
+                'end_date'   => $dailyDate,
+                'start_time' => $dailyStart,
+                'end_time'   => $dailyEnd,
+                'original_start' => $start,
+                'original_end'   => $end,
+            ];
+
+            $current->addDay();
+        }
+
+        return $splits;
+    }
+
     /**
     * scheduleRenderを使用してスケジュールをレンダリングするメソッド
     *
@@ -112,17 +173,20 @@ abstract class CalendarTimebaseView extends CalendarView {
 
         foreach ($groupedSchedules as $dateKey => $schedules) {
             foreach ($schedules as $schedule) {
-                $rendered[$dateKey][] = $this->scheduleRender($schedule);
+                $splitSchedules = $this->splitMultiDaySchedule($schedule);
+                foreach ($splitSchedules as $splitSchedule) {
+                    $splitDate = $splitSchedule->start_date;
+                    $rendered[$splitDate][] = $this->scheduleRender($splitSchedule);
+                }
             }
         }
-        
         return collect($rendered);
     }
 
     /**
     * スケジュールをレンダリングするメソッド
     *
-    * @param Collection scheduleテーブルのレコード1行
+    * @param Schedule $schedule インスタンス
     *
     * @return string スケジュールのhtml
     */
@@ -141,19 +205,35 @@ abstract class CalendarTimebaseView extends CalendarView {
             $scheduleAvailabilityTime['endTime'],
             $timeType,
         ];
-        if ($timeType === 'normal') {
-            $scheduleStartTime = strtotime($schedule->start_date . ' ' . $schedule->start_time);
-            $scheduleEndTime = strtotime($schedule->end_date . ' ' . $schedule->end_time);
 
-            $scheduleContents[] = date('H:i', $scheduleStartTime) . '～' . date('H:i', $scheduleEndTime); // MM:DD～MM:DD
+        $startTime = $schedule->original_start ?? Carbon::parse($schedule->start_date . ' ' . $schedule->start_time);
+        $endTime = $schedule->original_end ?? Carbon::parse($schedule->end_date . ' ' . $schedule->end_time);
 
-            $paramForGetSchedulePanelPosition[] = $scheduleStartTime;
-            $paramForGetSchedulePanelPosition[] = $scheduleEndTime;
-        } elseif ($timeType === 'all_day') {
-            $scheduleContents[] = '終日';
-        } else {
-            $scheduleContents[] = '時間未定';
+        // 日付情報のテキスト用（時間指定or終日）
+        $formatTime = function($startTime, $endTime, $timeType): string
+        {
+            if($timeType ==='all_day') {
+                return $startTime->isSameDay($endTime)
+                    ? '終日'
+                    : $startTime->format('m/d') . ' ～ ' . $endTime->format('m/d');
+            }
+            if ($timeType === 'undecided') {
+                return $startTime->isSameDay($endTime)
+                    ? '時間未定'
+                    : $startTime->format('m/d') . ' ～ ' . $endTime->format('m/d') . ' 時間未定';
+            }
+
+            return $startTime->isSameDay($endTime)
+                ? $startTime->format('H:i') . ' ～ ' . $endTime->format('H:i')
+                : $startTime->format('m/d H:i') . ' ～ ' . $endTime->format('m/d H:i');
         };
+
+        $scheduleContents[] = $formatTime($startTime, $endTime, $timeType);
+
+        if ($timeType === 'normal') {
+            $paramForGetSchedulePanelPosition[] = strtotime($schedule->start_date . ' ' . $schedule->start_time);
+            $paramForGetSchedulePanelPosition[] = strtotime($schedule->end_date . ' ' . $schedule->end_time);
+        }
 
         if ($schedule->schedule_category) $scheduleContents[] = $schedule->schedule_category->name . '：'; // カテゴリ
         $scheduleContents[] = $schedule->title; // タイトル
@@ -167,11 +247,11 @@ abstract class CalendarTimebaseView extends CalendarView {
         // 最終HTML
         $html = [];
         $html[] = trim('
-            <div class="schedule-panel weekday-schedule-panel" style="' . $styleAttribute .'" data-schedule-id=' . e($schedule['id']) . '>
+            <div class="schedule-panel weekday-schedule-panel" style="' . $styleAttribute .'" data-schedule-id=' . e($schedule->id) . '>
                 <p class="schedule-text">' . $scheduleText . '</p>
             </div>
         ');
-
+        
         return implode('', $html);
     }
 }
