@@ -59,8 +59,24 @@ abstract class CalendarTimebaseView extends CalendarView {
         if ($timeType === 'normal') {
             // ベース時間（表示スケジュールの開始時間）
             $timelineTop = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleStartTime));
-            $baseTime = $timelineTop - 3600; // 1行目は時間未定予定用なのでずらす
+            $timelineBottom = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleEndTime + 1));
 
+            // 完全に表示時間外の場合
+            if ($endTimestamp < $timelineTop || $startTimestamp > $timelineBottom) {
+                return [
+                    'top' => '0px',
+                    'height' => '16px',
+                    'width' => '100%'
+                ];
+            }
+
+            // はみ出す部分を切り詰める
+            $startTimestamp = max($startTimestamp, $timelineTop);
+            $endTimestamp = min($endTimestamp, $timelineBottom);
+
+            // 1行目は時間未定予定用なのでずらす
+            $baseTime = $timelineTop - 3600;
+            
             $topPx = ($startTimestamp - $baseTime) / 60 * ($timeHeight / 60); // ベース時間からの分差
             $heightPx = ($endTimestamp - $startTimestamp) / 60 * ($timeHeight / 60); // スケジュールの時間（分）
         } elseif ($timeType === 'all_day') {
