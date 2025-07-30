@@ -25,8 +25,8 @@ class CalendarDayView extends CalendarTimebaseView {
         $html = [];
         // ヘッダ
         $html[] = trim('
-            <div class="calendar-main-weekday-calendar">
-                <table class="calendar-main-table calendar-main-table-weekday">
+            <div class="calendar__main-weekday-calendar">
+                <table class="calendar__main-table calendar__main-table--weekday">
                     <thead>
                         <tr>
                             <th></th>
@@ -35,12 +35,12 @@ class CalendarDayView extends CalendarTimebaseView {
         $day = new CalendarWeekDay($this->carbon);
 
         $td_classes = [$day->getClassName()];
-        if ($day->isToday()) $td_classes[] = "day-today"; // 「今日」のみクラスを追加
-        if ($day->isSunday()) $td_classes[] = "header-sun";
-        if ($day->isSaturday()) $td_classes[] = "header-sat";
+        if ($day->isToday()) $td_classes[] = "day--today"; // 「今日」のみクラスを追加
+        if ($day->isSunday()) $td_classes[] = "header--sun";
+        if ($day->isSaturday()) $td_classes[] = "header--sat";
         $html[] = '<th class="' . implode(" ", $td_classes) . '">';
 
-        $html[] = trim('<div class="calendar-weekday-header-cell calendar-day-header-cell">');
+        $html[] = trim('<div class="calendar__weekday-header-cell calendar__day-header-cell">');
 
         $html[] = $this->getScheduleAddButton($day);
         $html[] = trim('

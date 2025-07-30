@@ -29,8 +29,6 @@ class ScheduleRequest extends FormRequest
             'time_type' => ['required', 'in:normal,all_day,undecided'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
-            'start_time' => ['exclude_unless:time_type,normal', 'required', 'date_format:H:i'],
-            'end_time' => ['exclude_unless:time_type,normal', 'required', 'date_format:H:i'],
             'participants' => ['required', 'array'],
             'participants.*' => ['integer', 'exists:users,id'],
             'memo' => ['nullable', 'string', 'max:65535'],
@@ -42,17 +40,51 @@ class ScheduleRequest extends FormRequest
 
     public function withValidator($validator)
     {
+        // start/end_time用のルール
+        $validator->sometimes(
+            ['start_time', 'end_time'],
+            ['required', 'date_format:H:i'],
+            function($input) {
+                return $input->time_type === 'normal';
+            }
+        );
+
+        // 終了日時が開始日時より後かチェック
         $validator->after(function($validator) {
-            $start = $this->input('start_date') . ' ' . $this->input('start_time');
-            $end = $this->input('end_date') . ' ' . $this->input('end_time');
+            $timeType = $this->input('time_type');
 
-            if ($this->input('time_type') === 'normal') {
+            // normalなら日時、それ以外なら日付のみで判定
+            if ($timeType === 'normal') {
+                $startDate = $this->input('start_date');
+                $endDate = $this->input('end_date');
+                $startTime = $this->input('start_time');
+                $endTime = $this->input('end_time');
+
                 try {
-                    $startDt = Carbon::createFromFormat('Y-m-d H:i', $start);
-                    $endDt = Carbon::createFromFormat('Y-m-d H:i', $end);
+                    $start = Carbon::createFromFormat('Y-m-d H:i', "$startDate $startTime");
+                    $end = Carbon::createFromFormat('Y-m-d H:i', "$endDate $endTime");
 
-                    if ($endDt->lessThanOrEqualTo($startDt)) {
-                        $validator->errors()->add('end_date', '終了日時は開始日時より後にしてください。');
+                    if ($end->lessThanOrEqualTo($start)) {
+                        if ($startDate === $endDate) { // 時間だけがNGの場合
+                            $validator->errors()->add('end_time', '終了時間は開始時間より後にしてください。');
+                        } else { // 日付がそもそもNGの場合
+                            $validator->errors()->add('end_date', '終了日は開始日と同じか後にしてください。');
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $validator->errors()->add('start_date', '開始日時の形式が不正です。');
+                    $validator->errors()->add('end_date', '終了日時の形式が不正です。');
+                }
+            } else {
+                $startDate = $this->input('start_date');
+                $endDate = $this->input('end_date');
+
+                try {
+                    $startDt = Carbon::createFromFormat('Y-m-d', $startDate);
+                    $endDt = Carbon::createFromFormat('Y-m-d', $endDate);
+
+                    if ($endDt->lessThan($startDt)) {
+                        $validator->errors()->add('end_date', '終了日は開始日と同じか後にしてください。');
                     }
                 } catch (\Exception $e) {
                     $validator->errors()->add('start_date', '開始日時の形式が不正です。');

@@ -97,17 +97,17 @@ class CalendarMonthView extends CalendarView {
         $html = [];
         // ヘッダ
         $html[] = trim('
-            <div class="calendar-main-month-calendar">
-                <table class="calendar-main-table calendar-main-table-month">
+            <div class="calendar__main-month-calendar">
+                <table class="calendar__main-table calendar__main-table--month">
                     <thead>
                         <tr>
-                            <th class="header-sun">日</th>
-                            <th class="header-mon">月</th>
-                            <th class="header-tue">火</th>
-                            <th class="header-wed">水</th>
-                            <th class="header-thu">木</th>
-                            <th class="header-fri">金</th>
-                            <th class="header-sat">土</th>
+                            <th class="header--sun">日</th>
+                            <th class="header--mon">月</th>
+                            <th class="header--tue">火</th>
+                            <th class="header--wed">水</th>
+                            <th class="header--thu">木</th>
+                            <th class="header--fri">金</th>
+                            <th class="header--sat">土</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,18 +130,18 @@ class CalendarMonthView extends CalendarView {
             foreach ($days as $day) {
                 
                 $td_classes = [$day->getClassName()];
-                if ($day->isToday()) $td_classes[] = "day-today"; // 「今日」のみクラスを追加
+                if ($day->isToday()) $td_classes[] = "day--today"; // 「今日」のみクラスを追加
                 $html[] = '<td class="' . implode(" ", $td_classes) . '">';
                 $html[] = trim('
                     <div class="day-cell">
-                        <div class="calendar-dateblock">
+                        <div class="calendar__dateblock">
                 ');
                 $html[] = $day->render();
 
                 $html[] = $this->getScheduleAddButton($day);
                 $html[] = trim('            
                     </div>
-                    <div class="calendar-schedule-area">
+                    <div class="calendar__schedule-area">
                 ');
                 
                 // ----スケジュールのレンダリングエリア----
