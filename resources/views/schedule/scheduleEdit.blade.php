@@ -58,7 +58,12 @@
                                         <div class="schedule-form__error">{{ $message }}</div>
                                     @enderror
                                     <div class="schedule-form__start-time-wrapper">
-                                        <input class="schedule-form__start-time-input schedule-form__time-input" type="time" name="start_time" value="{{ old('start_time', substr($schedule->start_time, 0, 5) ?? '') }}">
+                                        <input
+                                            class="schedule-form__start-time-input schedule-form__time-input"
+                                            type="time"
+                                            name="start_time"
+                                            value="{{ old('start_time', (isset($schedule) && $schedule->time_type === 'normal') ? substr($schedule->start_time, 0, 5) : '') }}"
+                                        >
                                     </div>
                                     @error('start_time')
                                         <div class="schedule-form__error">{{ $message }}</div>
@@ -71,7 +76,12 @@
                                         <div class="schedule-form__error">{{ $message }}</div>
                                     @enderror
                                     <div class="schedule-form__end-time-wrapper">
-                                        <input class="schedule-form__end-time-input schedule-form__time-input" type="time" name="end_time" value="{{ old('end_time', substr($schedule->end_time, 0, 5) ?? '') }}">
+                                        <input
+                                            class="schedule-form__end-time-input schedule-form__time-input"
+                                            type="time"
+                                            name="end_time"
+                                            value="{{ old('end_time', (isset($schedule) && $schedule->time_type === 'normal') ? substr($schedule->end_time, 0, 5) : '') }}"
+                                        >
                                     </div>
                                     @error('end_time')
                                         <div class="schedule-form__error">{{ $message }}</div>
