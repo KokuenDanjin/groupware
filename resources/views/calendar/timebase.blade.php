@@ -1,3 +1,4 @@
+@vite('resources/js/components/calendar/timebase-schedule.js')
 <div class="calendar__main-calendar">
     {!! $calendar->render() !!}
     <table class="calendar__main-table calendar__main-table--weekday calendar__main-table--weekday-data">
@@ -7,9 +8,9 @@
                     $showDays = $type === 'week' ? 7 : 1;
                     $daysSchedules = $calendar->callScheduleRender($userId, $currentDate, $showDays);
                 @endphp
-                @for ($col = 0; $col <= $showDays; $col++)
+                @for ($col = 0; $col < $showDays + 1; $col++)
                     <td>
-                        <div class="calendar__daily calendar__cell {{ ($col === 0 ? 'time-cell' : 'schedule-cell') }}">
+                        <div class="calendar__daily calendar__cell undetermined-events {{ ($col === 0 ? 'time-cell' : 'schedule-cell') }}">
                             @if ($col !== 0)
                                 @php
                                     $colDate = Carbon\Carbon::createFromFormat('Y-m-d', $currentDate)->addDay($col - 1);
