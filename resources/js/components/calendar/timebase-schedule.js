@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('適用開始');
     const timelineStartHour = 8; // PHP側 getAvailabilityTimeと同じ
     const timelineEndHour = 21;  // PHP側 getAvailabilityTimeと同じ (endTime + 1)
     
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const topOffset = undeterminedContainer?.offsetHeight || 0;
 
     const timelineEvents = [];
-    const undeterminedEvents = [];
 
     // 1. イベント分類
     panels.forEach(panel => {
@@ -118,5 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
             delete ev._height;
         });
     });
-    console.log('適用完了');
+    
+    // 4. 時間未定エリアのheightを統一
+    const undeterminedEvents = Array.from(document.querySelectorAll('.undetermined-events'));
+    const maxHeight = undeterminedEvents.reduce((max, ev) => {
+        return Math.max(max, ev.clientHeight);
+    }, 0);
+    undeterminedEvents.forEach(ev => {
+        ev.style.height = `${maxHeight}px`;
+    })
 });
