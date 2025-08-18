@@ -9,6 +9,7 @@
 
 namespace App\Calendar;
 
+use App\Models\schedule;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -34,67 +35,6 @@ abstract class CalendarTimebaseView extends CalendarView {
     }
 
     /**
-    * スケジュールパネルのポジションを計算するメソッド
-    *
-    * @param int $scheduleStartTime タイムライン表示の開始時間 h
-    * @param int $scheduleEndTime  タイムライン表示の終了時間 h
-    * @param int $timeType time_typeカラムの値　normal or all_day or undecided
-    * @param string $startTimestamp スケジュールの開始時間 UNIXタイムスタンプ
-    * @param string $endTimestamp スケジュールの終了時間 UNIXタイムスタンプ
-    *
-    * @return array パネルの位置、大きさ
-    */
-    function getSchedulePanelPosition(
-        $scheduleStartTime,
-        $scheduleEndTime,
-        $timeType,
-        $startTimestamp = null,
-        $endTimestamp = null
-    ):array
-    {
-        $timeHeight = 60;
-
-        // スケジュールが表示時間外の場合の処理
-
-        if ($timeType === 'normal') {
-            // ベース時間（表示スケジュールの開始時間）
-            $timelineTop = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleStartTime));
-            $timelineBottom = strtotime(date('Y-m-d', $startTimestamp) . sprintf('%02d00', $scheduleEndTime + 1));
-
-            // 完全に表示時間外の場合
-            if ($endTimestamp < $timelineTop || $startTimestamp > $timelineBottom) {
-                return [
-                    'top' => '0px',
-                    'height' => '16px',
-                    'width' => '100%'
-                ];
-            }
-
-            // はみ出す部分を切り詰める
-            $startTimestamp = max($startTimestamp, $timelineTop);
-            $endTimestamp = min($endTimestamp, $timelineBottom);
-
-            // 1行目は時間未定予定用なのでずらす
-            $baseTime = $timelineTop - 3600;
-            
-            $topPx = ($startTimestamp - $baseTime) / 60 * ($timeHeight / 60); // ベース時間からの分差
-            $heightPx = ($endTimestamp - $startTimestamp) / 60 * ($timeHeight / 60); // スケジュールの時間（分）
-        } elseif ($timeType === 'all_day') {
-            $topPx = $timeHeight;
-            $heightPx = ($scheduleEndTime - $scheduleStartTime + 1) * $timeHeight; // スケジュールの時間（分）
-        } else {
-            $topPx = 0; // タイムライン上部
-            $heightPx = 16;
-        };
-
-        return [
-            'top' => $topPx . 'px',
-            'height' => $heightPx .'px',
-            'width' => '100%'
-        ];
-    }
-
-    /**
     * style属性に載せる形を生成するメソッド
     *
     * @return array 連想配列 [プロパティ => 値]
@@ -113,56 +53,215 @@ abstract class CalendarTimebaseView extends CalendarView {
      */
     function splitMultiDaySchedule($schedule): array
     {
-        $start = Carbon::parse($schedule->start_date . ' ' . $schedule->start_time ?? '00:00:00');
-        $end = Carbon::parse($schedule->end_date . ' ' . $schedule->end_time ?? '00:00:00');
+        $startTime = $schedule->start_time ?? '00:00:00';
+        $endTime = $schedule->end_time ?? '00:00:00';
+        $start = Carbon::parse($schedule->start_date . ' ' . $startTime);
+        $end = Carbon::parse($schedule->end_date . ' ' . $endTime);
 
         // 同日ならそのまま返す
         if ($start->isSameDay($end)) {
             // 元スケジュールの日時情報を保持
             $schedule->original_start = $start;
             $schedule->original_end = $end;
+            $schedule->split_priority = ($schedule->time_type === 'all_day') ? 1 : 2;
             return [$schedule];
         }
 
         $splits = [];
-        $current = $start->copy()->startOfDay();
+        $current = $start->copy();
 
         while ($current->lte($end)) {
             $dailyDate = $current->toDateString();
+            $isFirstDay = $current->isSameDay($start);
+            $isLastDay = $current->isSameDay($end);
 
             if ($schedule->time_type === 'all_day') {
-                $dailyStart = '00:00';
-                $dailyEnd = '24:00';
+                $dailyStart = '00:00:00';
+                $dailyEnd = '23:59:59';
             } else {
-                if ($current->isSameDay($start)) {
-                    $dailyStart = $start->format('H:i');
-                    $dailyEnd = '24:00';
-                } elseif ($current->isSameDay($end)) {
-                    $dailyStart = '00:00';
-                    $dailyEnd = $end->format('H:i');
+                if ($isFirstDay) {
+                    $dailyStart = $start->format('H:i:s');
+                    $dailyEnd = '23:59:59';
+                } elseif ($isLastDay) {
+                    $dailyStart = '00:00:00';
+                    $dailyEnd = $end->format('H:i:s');
                 } else {
-                    $dailyStart = '00:00';
-                    $dailyEnd = '24:00';
+                    $dailyStart = '00:00:00';
+                    $dailyEnd = '23:59:59';
                 }
             }
 
+            $type = (!$current->isSameDay($start) && !$current->isSameDay($end))
+                ? 'multi_day_normal'
+                : $schedule->time_type;
             $splits[] = (object)[
-                'id' => $schedule->id,
+                'id' => $schedule->id . '-' . $dailyDate,
+                'parent_id' => $schedule->id,
                 'title' => $schedule->title,
-                'time_type' => $schedule->time_type,
+                'time_type' => $type,
                 'schedule_category' => $schedule->schedule_category,
                 'start_date' => $dailyDate,
-                'end_date'   => $dailyDate,
+                'end_date' => $dailyDate,
                 'start_time' => $dailyStart,
-                'end_time'   => $dailyEnd,
+                'end_time' => $dailyEnd,
                 'original_start' => $start,
-                'original_end'   => $end,
+                'original_end' => $end,
+                'created_at' => $schedule->created_at,
+                'split_priority' => ($type === 'all_day') ? 1 : 2
             ];
 
             $current->addDay();
         }
 
         return $splits;
+    }
+
+
+    /**
+     * 時間の重複でスケジュールをグループ化する（終日も含む）メソッド
+     *
+     * @param array $schedules スケジュールの配列
+     * 
+     * @return array グループ配列（それぞれが重複するスケジュール群）
+     */
+    function groupOverlappingSchedulesWithAllDay($schedules): array
+    {
+        // 時間情報を付与
+        $normalized = array_map(function($s) {
+            $start = ($s->time_type === 'all_day' || $s->time_type === 'multi_day_normal') 
+                ? strtotime($s->start_date . ' 00:00:00') 
+                : strtotime($s->start_date . ' ' . $s->start_time);
+            $end = ($s->time_type === 'all_day' || $s->time_type === 'multi_day_normal') 
+                ? strtotime($s->start_date . ' 23:59:59') 
+                : strtotime($s->end_date   . ' ' . $s->end_time);
+            return [
+                'schedule' => $s,
+                'start' => $start,
+                'end' => $end
+            ];
+        }, $schedules);
+        usort($normalized, fn($a, $b) => $a['start'] <=> $b['start']);
+
+        // グラフ探索で連結成分（重複グループ）を作る
+        $visited = [];
+        $groups = [];
+
+        $overlap = function($a, $b) {
+            $result = $a['start'] < $b['end'] && $b['start'] < $a['end'];
+            return $result;
+        };
+
+        foreach ($normalized as $i => $node) {
+            if (isset($visited[$i])) continue;
+
+            // BFS / DFS
+            $stack = [$i];
+            $component = [];
+
+            while ($stack) {
+                $idx = array_pop($stack);
+                if (isset($visited[$idx])) continue;
+                $visited[$idx] = true;
+                $component[] = $normalized[$idx];
+
+                foreach ($normalized as $j => $other) {
+                    if (!isset($visited[$j]) && $overlap($normalized[$idx], $other)) {
+                        $stack[] = $j;
+                    }
+                }
+            }
+
+            $groups[] = $component;
+        }
+
+        // 各グループ内で並び順を決定
+        foreach ($groups as &$group) {
+            usort($group, function($a, $b) {
+                $pa = $a['schedule']->split_priority ??
+                ($a['schedule']->time_type === 'all_day' || $a['schedule']->time_type === 'multi_day_normal' ? 1 : 2);
+                $pb = $b['schedule']->split_priority ??
+                ($b['schedule']->time_type === 'all_day' || $b['schedule']->time_type === 'multi_day_normal' ? 1 : 2);
+
+                if ($pa !==$pb) return $pa <=> $pb;
+
+                if ($a['start'] === $b['start']) {
+                    return strtotime($a['schedule']->created_at) <=> strtotime($b['schedule']->created_at);
+                }
+                return $a['start'] <=> $b['start'];
+            });
+
+            // グループ分け結果
+            foreach ($groups as $idx => $group) {
+                $ids = array_map(fn($n) => $n['schedule']->id, $group);
+            }
+        }
+
+        return array_map(fn($g) => array_column($g, 'schedule'), $groups);
+    }
+
+    
+    /**
+     * 1グループ内での列割り当てをするメソッド
+     *
+     * @param  array $group 同じ連結成分のスケジュール
+     * 
+     * @return array [['schedule' => Schedule, 'col' => int], ...] colは0開始
+     */
+    function assignColumnsInGroup($group): array
+    {
+        usort($group, function($a, $b) {
+            $pa = $a->split_priority ?? ($a->time_type === 'all_day' ? 1 : 2);
+            $pb = $b->split_priority ?? ($b->time_type === 'all_day' ? 1 : 2);
+            
+            if ($pa !== $pb) return $pa <=> $pb;
+
+            $sa = strtotime($a->start_date . ' ' . $a->start_time);
+            $sb = strtotime($b->start_date . ' ' . $b->start_time);
+            
+            return $sa <=> $sb ?: strtotime($a->created_at) <=> strtotime($b->created_at);
+        });
+
+        $columns = [];
+        $results = [];
+
+        foreach ($group as $s) {
+            $start = ($s->time_type === 'all_day') 
+                ? strtotime($s->start_date . ' 00:00:00') 
+                : strtotime($s->start_date . ' ' . $s->start_time);
+            $end = ($s->time_type === 'all_day') 
+                ? strtotime($s->start_date . ' 23:59:59') 
+                : strtotime($s->end_date   . ' ' . $s->end_time);
+
+            $colIndex = null;
+            foreach ($columns as $idx => $lastEnd) {
+                if ($start >= $lastEnd) {
+                    $colIndex = $idx;
+                    $columns[$idx] = $end;
+                    break;
+                }
+            }
+            if ($colIndex === null) {
+                $colIndex = count($columns);
+                $columns[] = $end;
+            }
+            $results[] = ['schedule' => $s, 'col' => $colIndex];
+        }
+
+        return ['items' => $results, 'total' => count($columns)];
+    }
+
+    /**
+    * scheduleの開始時間、終了時間を固定するメソッド
+    *
+    * @param schedule $schedule スケジュール
+    * @param string $startTime 開始時間（H:i:s）
+    * @param string $endTime 終了時間（H:i:s）
+    *
+    */
+    function scheduleTimeFixer($schedule, $startTime = '00:00:00', $endTime = '23:59:59'): void
+    {
+        $schedule->start_time = $startTime;
+        $schedule->end_time = $endTime;
     }
 
     /**
@@ -174,28 +273,93 @@ abstract class CalendarTimebaseView extends CalendarView {
     *
     * @return Collection 日ごとにグループ化したスケジュール
     */
-    function callScheduleRender($userId, $date, $days = 1):Collection
+    function callScheduleRender($userId, $date, $days = 1): Collection
     {
         $startDate = Carbon::parse($date);
         $endDate = $startDate->copy()->addDay($days - 1);
 
         $groupedSchedules = $this->getGroupedSchedulesByDateRange([
             'start' => $startDate->toDateString(),
-            'end' => $endDate->toDateString(),
-            'userId' => $userId
+            'end'   => $endDate->toDateString(),
+            'userId'=> $userId
         ]);
 
-        $rendered = [];
+        // 終日予定の時間を固定
+        $groupedSchedules->each(function($schedules) {
+            foreach ($schedules as $s) {
+                if ($s->time_type === 'all_day') {
+                    $this->scheduleTimeFixer($s);
+                }
+            }
+        });
 
+        $groupedByDate = [];
+
+        // 日跨ぎを分割して日ごとにまとめる
         foreach ($groupedSchedules as $dateKey => $schedules) {
             foreach ($schedules as $schedule) {
-                $splitSchedules = $this->splitMultiDaySchedule($schedule);
-                foreach ($splitSchedules as $splitSchedule) {
-                    $splitDate = $splitSchedule->start_date;
-                    $rendered[$splitDate][] = $this->scheduleRender($splitSchedule);
+                foreach ($this->splitMultiDaySchedule($schedule) as $split) {
+                    if (!isset($split->split_priority)) {
+                        $split->split_priority = ($split->time_type === 'all_day') ? 1 : 2;
+                    }
+                    $groupedByDate[$split->start_date][] = $split;
                 }
             }
         }
+
+        $rendered = [];
+        $availability = $this->getAvailabilityTime();
+
+        foreach ($groupedByDate as $dateKey => $schedules) {
+            $daily = collect($schedules);
+
+            // 表示範囲内
+            $inTime = $daily->filter(function($s) use ($availability) {
+                if ($s->time_type === 'undecided') return false;
+                if ($s->time_type === 'all_day') return true;
+
+                $start = strtotime($s->start_date . ' ' . $s->start_time);
+                $end   = strtotime($s->end_date   . ' ' . $s->end_time);
+
+                $timelineTop    = strtotime($s->start_date . sprintf(' %02d:00:00', $availability['startTime']));
+                $timelineBottom = strtotime($s->start_date . sprintf(' %02d:00:00', $availability['endTime']));
+
+                return !($end < $timelineTop || $start > $timelineBottom);
+            })->values();
+
+            // 表示時間外
+            $outTime = $daily
+                ->filter(fn($s) => $s->time_type === 'normal')
+                ->reject(fn($s) => $inTime->contains(fn($in) => $in->id === $s->id && $in->start_date === $s->start_date))
+                ->values();
+
+            // 未定
+            $undecided = $daily->where('time_type', 'undecided')->values();
+
+            // 重複グループ化
+            $groups = $this->groupOverlappingSchedulesWithAllDay($inTime->all());
+
+            // 列割り当て & HTML化
+            foreach ($groups as $group) {
+                $assigned = $this->assignColumnsInGroup($group);
+                $totalCols = $assigned['total'];
+
+                foreach ($assigned['items'] as $item) {
+                    $rendered[$dateKey][] = $this->scheduleRender($item['schedule'], $item['col'], $totalCols);
+                }
+            }
+
+            // 時間外予定
+            foreach ($outTime as $schedule) {
+                $rendered[$dateKey][] = $this->scheduleRender($schedule);
+            }
+
+            // 未定予定
+            foreach ($undecided as $schedule) {
+                $rendered[$dateKey][] = $this->scheduleRender($schedule);
+            }
+        }
+
         return collect($rendered);
     }
 
@@ -203,10 +367,12 @@ abstract class CalendarTimebaseView extends CalendarView {
     * スケジュールをレンダリングするメソッド
     *
     * @param Schedule $schedule インスタンス
+    * @param integer $index 横並びにした場合の左からの順番（0始まり）
+    * @param integer $count 同時に重なっているスケジュールの総数
     *
     * @return string スケジュールのhtml
     */
-    function scheduleRender($schedule): string
+    function scheduleRender($schedule, $index = 0, $count = 1): string
     {
         $timeType = $schedule->time_type;
 
@@ -246,7 +412,7 @@ abstract class CalendarTimebaseView extends CalendarView {
 
         $scheduleContents[] = $formatTime($startTime, $endTime, $timeType);
 
-        if ($timeType === 'normal') {
+        if ($timeType === 'normal' || $timeType === 'multi_day_normal') {
             $paramForGetSchedulePanelPosition[] = strtotime($schedule->start_date . ' ' . $schedule->start_time);
             $paramForGetSchedulePanelPosition[] = strtotime($schedule->end_date . ' ' . $schedule->end_time);
         }
@@ -255,15 +421,19 @@ abstract class CalendarTimebaseView extends CalendarView {
         $scheduleContents[] = $schedule->title; // タイトル
 
         $scheduleText = implode(' ', $scheduleContents);
-        
-        // Style
-        $styles = $this->getSchedulePanelPosition(...$paramForGetSchedulePanelPosition);
-        $styleAttribute = $this->getStyleAttributeString($styles);
 
         // 最終HTML
         $html = [];
         $html[] = trim('
-            <div class="schedule-panel weekday-schedule-panel" style="' . $styleAttribute .'" data-schedule-id=' . e($schedule->id) . '>
+            <div
+                class="schedule-panel weekday-schedule-panel"
+                
+                data-schedule-id="' . e($schedule->id) .'"
+                data-start="' . e($schedule->start_date . 'T' . $schedule->start_time) . '"
+                data-end="' . e($schedule->end_date . 'T' . $schedule->end_time) . '"
+                data-time-type="' . e($schedule->time_type) . '"
+                data-title="' . e($schedule->title) . '"
+            >
                 <p class="schedule-text">' . $scheduleText . '</p>
             </div>
         ');

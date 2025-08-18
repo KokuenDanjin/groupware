@@ -165,24 +165,29 @@ abstract class CalendarView {
     function getGroupedSchedulesByDateRange($options): Collection
     {
         $start = $options['start'];
-        $end = $options['end'] ?? null;
+        $end = $options['end'] ?? $start;
         $userId = $options['userId'] ?? null;
 
         $query = schedule::query();
 
-        if ($start && $end) {
-            $query->whereBetween('start_date', [$start, $end]);
-        } else {
-            $query->where('start_date', $start);
-        }
+        // start,date間に含まれるスケジュール
+        $query->where(function($query) use ($start, $end) {
+            $query->whereBetween('start_date', [$start, $end])
+            ->orWhereBetween('end_date', [$start, $end])
+            ->orWhere(function($query) use ($start, $end) {
+                $query->where('start_date', '<', $start)
+                    ->where('end_date', '>', $end);
+            });
+        });
 
+        // userIdで絞る
         if ($userId) {
             $query->whereHas('users', function($q) use ($userId) {
                 $q->where('users.id', $userId);
             });
         }
 
-        return $query->orderBy('start_time')->get()->groupBy('start_date');
+        return $query->orderBy('start_date')->orderBy('start_time')->get()->groupBy('start_date');
     }
 
     /**
